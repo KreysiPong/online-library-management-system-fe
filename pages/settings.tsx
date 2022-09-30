@@ -1,0 +1,7 @@
+import { FC } from 'react';
+
+const Settings: FC = () => (
+  <div>Settings</div>
+);
+
+export default Settings;
