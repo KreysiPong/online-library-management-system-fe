@@ -1,131 +1,62 @@
-import { Box, Table, TableContainer, Tbody, Td, Th, Thead, Tr } from '@chakra-ui/react';
-import { FC } from 'react';
+import { Books, Box, Button, Table, TableContainer, Tbody, Td, Text, Th, Thead, Tr } from '@chakra-ui/react';
+import { FC, useEffect, useState } from 'react';
 
-const Books: FC = () => (
-  <Box >
-    <TableContainer>
-      <Table variant='striped' colorScheme='teal'>
-        <Thead>
-          <Tr>
-            <Th>ISBN</Th>
-            <Th>Title</Th>
-            <Th >Author</Th>
-            <Th >Quantity</Th>
-            <Th >Quantity</Th>
-          </Tr>
-        </Thead>
-        <Tbody>
-          <Tr>
-            <Td>inches</Td>
-            <Td>millimetres (mm)</Td>
-            <Td >25.4</Td>
-            <Td >25.4</Td>
-            <Td >25.4</Td>
-          </Tr>
-          <Tr>
-            <Td>inches</Td>
-            <Td>millimetres (mm)</Td>
-            <Td >25.4</Td>
-            <Td >25.4</Td>
-            <Td >25.4</Td>
-          </Tr>
-          <Tr>
-            <Td>inches</Td>
-            <Td>millimetres (mm)</Td>
-            <Td >25.4</Td>
-            <Td >25.4</Td>
-            <Td >25.4</Td>
-          </Tr>
-          <Tr>
-            <Td>inches</Td>
-            <Td>millimetres (mm)</Td>
-            <Td >25.4</Td>
-            <Td >25.4</Td>
-            <Td >25.4</Td>
-          </Tr>
-          <Tr>
-            <Td>inches</Td>
-            <Td>millimetres (mm)</Td>
-            <Td >25.4</Td>
-            <Td >25.4</Td>
-            <Td >25.4</Td>
-          </Tr>
-          <Tr>
-            <Td>inches</Td>
-            <Td>millimetres (mm)</Td>
-            <Td >25.4</Td>
-            <Td >25.4</Td>
-            <Td >25.4</Td>
-          </Tr>
-          <Tr>
-            <Td>inches</Td>
-            <Td>millimetres (mm)</Td>
-            <Td >25.4</Td>
-            <Td >25.4</Td>
-            <Td >25.4</Td>
-          </Tr>
-          <Tr>
-            <Td>inches</Td>
-            <Td>millimetres (mm)</Td>
-            <Td >25.4</Td>
-            <Td >25.4</Td>
-            <Td >25.4</Td>
-          </Tr>
-          <Tr>
-            <Td>inches</Td>
-            <Td>millimetres (mm)</Td>
-            <Td >25.4</Td>
-            <Td >25.4</Td>
-            <Td >25.4</Td>
-          </Tr>
-          <Tr>
-            <Td>inches</Td>
-            <Td>millimetres (mm)</Td>
-            <Td >25.4</Td>
-            <Td >25.4</Td>
-            <Td >25.4</Td>
-          </Tr>
-          <Tr>
-            <Td>inches</Td>
-            <Td>millimetres (mm)</Td>
-            <Td >25.4</Td>
-            <Td >25.4</Td>
-            <Td >25.4</Td>
-          </Tr>
-          <Tr>
-            <Td>inches</Td>
-            <Td>millimetres (mm)</Td>
-            <Td >25.4</Td>
-            <Td >25.4</Td>
-            <Td >25.4</Td>
-          </Tr>
-          <Tr>
-            <Td>inches</Td>
-            <Td>millimetres (mm)</Td>
-            <Td >25.4</Td>
-            <Td >25.4</Td>
-            <Td >25.4</Td>
-          </Tr>
-          <Tr>
-            <Td>inches</Td>
-            <Td>millimetres (mm)</Td>
-            <Td >25.4</Td>
-            <Td >25.4</Td>
-            <Td >25.4</Td>
-          </Tr>
-          <Tr>
-            <Td>inches</Td>
-            <Td>millimetres (mm)</Td>
-            <Td >25.4</Td>
-            <Td >25.4</Td>
-            <Td >25.4</Td>
-          </Tr>
+const Books: FC = () => {
+  // const [count, setCount] = useState(1);
+  const [data, setData] = useState([]);
 
-        </Tbody>
+  const load = async () => {
+    const data = await fetch("http://localhost:3002/books");
+    const response = await data.json();
+    // console.log(response)
+    setData(response);
+  };
 
-      </Table>
-    </TableContainer>
-  </Box>
-);
+
+
+  useEffect(() => {
+    load();
+  }, []);
+
+  return (
+    <Box >
+      <Box d="flex" justifyContent="space-between" alignItems="center" mb="20px">
+        <Text fontSize="40px">Books</Text>
+        <Button colorScheme='blue'>Add book</Button>
+      </Box>
+
+      <TableContainer>
+        <Table variant='striped' colorScheme='teal'>
+          <Thead>
+            <Tr>
+              <Th>year</Th>
+              <Th>Class</Th>
+              <Th >Title</Th>
+              <Th >Author</Th>
+              <Th >Publisher</Th>
+              <Th >ISBN</Th>
+            </Tr>
+          </Thead>
+          <Tbody>
+            {
+              data.map((book) => {
+                return (
+                  <Tr>
+                    <Td>{book.year}</Td>
+                    <Td>{book.class}</Td>
+                    <Td>{book.title}</Td>
+                    <Td>{book.author}</Td>
+                    <Td>{book.publisher}</Td>
+                    <Td>{book.isbn}</Td>
+                  </Tr>)
+              })
+            }
+          </Tbody>
+
+        </Table>
+      </TableContainer>
+    </Box>
+  )
+}
 
 export default Books;
