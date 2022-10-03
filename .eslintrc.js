@@ -22,7 +22,7 @@ module.exports = {
   ],
   plugins: ['@typescript-eslint', 'react-hooks'],
   rules: {
-    '@typescript-eslint/explicit-function-return-type': 'error',
+    '@typescript-eslint/explicit-function-return-type': 'warn',
     'react-hooks/rules-of-hooks': 'error',
     'react-hooks/exhaustive-deps': 'warn',
     'react/prop-types': 'off',

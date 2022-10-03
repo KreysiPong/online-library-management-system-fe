@@ -1,4 +1,4 @@
-import { Books, Box, Button, Table, TableContainer, Tbody, Td, Text, Th, Thead, Tr } from '@chakra-ui/react';
+import { Box, Button, Table, TableContainer, Tbody, Td, Text, Th, Thead, Tr } from '@chakra-ui/react';
 import { FC, useEffect, useState } from 'react';
 
 const Books: FC = () => {
@@ -39,9 +39,9 @@ const Books: FC = () => {
           </Thead>
           <Tbody>
             {
-              data.map((book) => {
+              data.map((book: any) => {
                 return (
-                  <Tr>
+                  <Tr key={book._id}>
                     <Td>{book.year}</Td>
                     <Td>{book.class}</Td>
                     <Td>{book.title}</Td>
