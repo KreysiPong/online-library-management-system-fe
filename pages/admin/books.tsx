@@ -1,8 +1,10 @@
 import {
   Box,
   Button,
+  Flex,
   FormControl,
   FormLabel,
+  Input,
   Modal,
   ModalBody,
   ModalCloseButton,
@@ -31,6 +33,7 @@ const Books: FC = () => {
   const [selectedBook, setSelectedBook] = useState('');
   const [lendLoading, setLendLoading] = useState(false);
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const { isOpen: isAddBookOpen, onOpen: onAddBookOpen, onClose: onAddBookClose } = useDisclosure();
   const toast = useToast();
 
   const getBooks = async () => {
@@ -85,7 +88,9 @@ const Books: FC = () => {
     <Box>
       <Box d="flex" justifyContent="space-between" alignItems="center" mb="20px">
         <Text fontSize="40px">Books</Text>
-        <Button colorScheme="blue">Add book</Button>
+        <Button colorScheme="blue" onClick={onAddBookOpen}>
+          Add book
+        </Button>
       </Box>
 
       <TableContainer>
@@ -133,6 +138,7 @@ const Books: FC = () => {
         </Table>
       </TableContainer>
 
+      {/* LEND BOOK MODAL */}
       <Modal isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
         <ModalContent>
@@ -165,6 +171,78 @@ const Books: FC = () => {
             >
               Lend
             </Button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
+
+      {/* ADD BOOK MODAL */}
+      <Modal isOpen={isAddBookOpen} onClose={onAddBookClose} size="xl">
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader>Add Book</ModalHeader>
+          <ModalCloseButton />
+          <ModalBody>
+            <Flex justifyContent="space-evenly">
+              <Box>
+                <FormControl>
+                  <FormLabel>Title</FormLabel>
+                  <Input type="text" />
+                </FormControl>
+                <FormControl>
+                  <FormLabel>Author</FormLabel>
+                  <Input type="text" />
+                </FormControl>
+                <FormControl>
+                  <FormLabel>Edition</FormLabel>
+                  <Input type="text" />
+                </FormControl>
+                <FormControl>
+                  <FormLabel>Volume</FormLabel>
+                  <Input type="text" />
+                </FormControl>
+                <FormControl>
+                  <FormLabel>Pages</FormLabel>
+                  <Input type="text" />
+                </FormControl>
+                <FormControl>
+                  <FormLabel>Publisher</FormLabel>
+                  <Input type="text" />
+                </FormControl>
+              </Box>
+              <Box>
+                <FormControl>
+                  <FormLabel>Year</FormLabel>
+                  <Input type="text" />
+                </FormControl>
+                <FormControl>
+                  <FormLabel>Remarks</FormLabel>
+                  <Input type="text" />
+                </FormControl>
+                <FormControl>
+                  <FormLabel>Locator</FormLabel>
+                  <Input type="text" />
+                </FormControl>
+                <FormControl>
+                  <FormLabel>ISBN</FormLabel>
+                  <Input type="text" />
+                </FormControl>
+                <FormControl>
+                  <FormLabel>Class</FormLabel>
+                  <Input type="text" />
+                </FormControl>
+                <FormControl>
+                  <FormLabel>Quantity</FormLabel>
+                  <Input type="text" />
+                </FormControl>
+              </Box>
+            </Flex>
+          </ModalBody>
+
+          <ModalFooter>
+            <Button colorScheme="red" mr={3} onClick={onClose}>
+              Close
+            </Button>
+            <Button colorScheme="teal">Add</Button>
           </ModalFooter>
         </ModalContent>
       </Modal>
