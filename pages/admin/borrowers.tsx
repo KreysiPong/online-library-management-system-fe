@@ -1,4 +1,4 @@
-import { Box, Table, TableContainer, Tbody, Td, Text, Th, Thead, Tr } from '@chakra-ui/react';
+import { Box, Button, Table, TableContainer, Tbody, Td, Text, Th, Thead, Tr } from '@chakra-ui/react';
 import { FC, useEffect, useState } from 'react';
 
 const Borrowers: FC = () => {
@@ -27,6 +27,7 @@ const Borrowers: FC = () => {
               <Th>Username</Th>
               <Th>Book</Th>
               <Th>Quantity</Th>
+              <Th>Actions</Th>
             </Tr>
           </Thead>
           <Tbody>
@@ -36,6 +37,9 @@ const Borrowers: FC = () => {
                   <Td>{item.borrower.username}</Td>
                   <Td>{item.book.title}</Td>
                   <Td>{item.quantity}</Td>
+                  <Td>
+                    <Button colorScheme="blue">Take back</Button>
+                  </Td>
                 </Tr>
               );
             })}

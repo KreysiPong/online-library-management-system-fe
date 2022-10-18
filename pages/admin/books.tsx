@@ -20,6 +20,7 @@ import {
   Thead,
   Tr,
   useDisclosure,
+  useToast,
 } from '@chakra-ui/react';
 import { FC, useEffect, useState } from 'react';
 
@@ -28,7 +29,9 @@ const Books: FC = () => {
   const [users, setUsers] = useState([]);
   const [selectedUser, setSelectedUser] = useState('');
   const [selectedBook, setSelectedBook] = useState('');
+  const [lendLoading, setLendLoading] = useState(false);
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const toast = useToast();
 
   const getBooks = async () => {
     const data = await fetch('http://localhost:3002/books');
@@ -48,7 +51,8 @@ const Books: FC = () => {
     }
   };
 
-  const lend = async (id) => {
+  const lend = async () => {
+    setLendLoading(true);
     const data = await fetch('http://localhost:3002/borrow/book', {
       method: 'POST',
       body: JSON.stringify({
@@ -60,7 +64,16 @@ const Books: FC = () => {
       },
     });
     const response = await data.json();
-    console.log(response);
+    if (response.status) {
+      toast({
+        title: 'Lend book successfully',
+        status: 'success',
+        isClosable: true,
+      });
+      onClose();
+      setLendLoading(false);
+      getBooks();
+    }
   };
 
   useEffect(() => {
@@ -144,7 +157,12 @@ const Books: FC = () => {
             <Button colorScheme="red" mr={3} onClick={onClose}>
               Close
             </Button>
-            <Button colorScheme="teal" disabled={!Boolean(selectedUser)} onClick={() => lend()}>
+            <Button
+              colorScheme="teal"
+              disabled={!Boolean(selectedUser) || lendLoading}
+              onClick={() => lend()}
+              isLoading={lendLoading}
+            >
               Lend
             </Button>
           </ModalFooter>
