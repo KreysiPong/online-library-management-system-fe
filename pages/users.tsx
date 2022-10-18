@@ -1,20 +1,58 @@
-import { Box } from '@chakra-ui/react';
-import { FC } from 'react';
+import { Box, Button, Table, TableContainer, Tbody, Td, Text, Th, Thead, Tr } from '@chakra-ui/react';
+import { FC, useEffect, useState } from 'react';
 
 const Users: FC = () => {
-  const fruits = [{ name: "banana" }, { name: "69" }, { name: "banaa" }];
+  const [data, setData] = useState([]);
 
+  const load = async () => {
+    const data = await fetch('http://localhost:3002/users');
+    const response = await data.json();
+    setData(response.data);
+  };
 
-  return <div>{
-    fruits.map((item) => {
-      return <Box bg='tomato' w='100%' p={4} color='white' mb='16px' key={item.name}>
-        {item.name}
+  useEffect(() => {
+    load();
+  }, []);
+
+  return (
+    <Box>
+      <Box d="flex" justifyContent="space-between" alignItems="center" mb="20px">
+        <Text fontSize="40px">Registered Students</Text>
+        <Button colorScheme="blue">Add Student</Button>
       </Box>
-    })
-  }</div>
-}
 
-
-
+      <TableContainer>
+        <Table variant="striped" colorScheme="teal">
+          <Thead>
+            <Tr>
+              <Th>Full Name</Th>
+              <Th>Course</Th>
+              <Th>Student ID</Th>
+              <Th>Year</Th>
+              <Th>Username</Th>
+              <Th>Email</Th>
+            </Tr>
+          </Thead>
+          <Tbody>
+            {data.map((user: any) => {
+              return (
+                <Tr key={user._id}>
+                  <Td>
+                    {user.first_name} {user.last_name}
+                  </Td>
+                  <Td>{user.course}</Td>
+                  <Td>{user.student_id}</Td>
+                  <Td>{user.year}</Td>
+                  <Td>{user.username}</Td>
+                  <Td>{user.email}</Td>
+                </Tr>
+              );
+            })}
+          </Tbody>
+        </Table>
+      </TableContainer>
+    </Box>
+  );
+};
 
 export default Users;
