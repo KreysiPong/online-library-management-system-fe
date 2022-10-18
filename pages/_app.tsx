@@ -17,21 +17,21 @@ const App: FC<AppProps> = ({ Component, pageProps }) => (
         {/* LEFT SIDEBAR */}
         <Box height="calc(100vh - 50px)" bg="#2c3e50" w="200px">
           <List padding="20px" spacing="16px">
-            <Link href="/books">
+            <Link href="/admin/books">
               <ListItem cursor="pointer">
                 <ListIcon as={TfiBook} color="green.500" />
                 Books
               </ListItem>
             </Link>
 
-            <Link href="/users">
+            <Link href="/admin/users">
               <ListItem cursor="pointer">
                 <ListIcon as={HiUsers} color="green.500" />
                 Users
               </ListItem>
             </Link>
 
-            <Link href="/borrowers">
+            <Link href="/admin/borrowers">
               <ListItem cursor="pointer">
                 <ListIcon as={FaBookReader} color="green.500" />
                 Borrowers
