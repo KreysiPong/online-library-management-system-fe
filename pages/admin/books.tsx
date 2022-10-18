@@ -26,6 +26,8 @@ import { FC, useEffect, useState } from 'react';
 const Books: FC = () => {
   const [data, setData] = useState([]);
   const [users, setUsers] = useState([]);
+  const [selectedUser, setSelectedUser] = useState('');
+  const [selectedBook, setSelectedBook] = useState('');
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   const getBooks = async () => {
@@ -40,10 +42,25 @@ const Books: FC = () => {
     setUsers(response.data);
   };
 
-  const openModal = (quantity) => {
+  const openModal = (quantity: number) => {
     if (quantity) {
       onOpen();
     }
+  };
+
+  const lend = async (id) => {
+    const data = await fetch('http://localhost:3002/borrow/book', {
+      method: 'POST',
+      body: JSON.stringify({
+        userId: selectedUser,
+        bookId: selectedBook,
+      }),
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+    const response = await data.json();
+    console.log(response);
   };
 
   useEffect(() => {
@@ -88,7 +105,10 @@ const Books: FC = () => {
                       disabled={!book.quantity}
                       colorScheme="cyan"
                       color="white"
-                      onClick={() => openModal(book.quantity)}
+                      onClick={() => {
+                        setSelectedBook(book._id);
+                        openModal(book.quantity);
+                      }}
                     >
                       Lend
                     </Button>
@@ -108,10 +128,10 @@ const Books: FC = () => {
           <ModalBody>
             <FormControl>
               <FormLabel>Student</FormLabel>
-              <Select placeholder="Select student">
+              <Select placeholder="Select student" onChange={(e) => setSelectedUser(e.target.value)}>
                 {users.map((user: any) => {
                   return (
-                    <option>
+                    <option value={user._id}>
                       {user.first_name} {user.last_name}
                     </option>
                   );
@@ -124,7 +144,9 @@ const Books: FC = () => {
             <Button colorScheme="red" mr={3} onClick={onClose}>
               Close
             </Button>
-            <Button colorScheme="teal">Lend</Button>
+            <Button colorScheme="teal" disabled={!Boolean(selectedUser)} onClick={() => lend()}>
+              Lend
+            </Button>
           </ModalFooter>
         </ModalContent>
       </Modal>
