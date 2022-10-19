@@ -105,6 +105,7 @@ const Books: FC = () => {
       toast({
         title: 'Successfully deleted book',
         status: 'success',
+        isClosable: true,
       });
       const prevData = [...data];
       const temp = prevData.filter((q: any) => q._id !== id);
@@ -113,6 +114,7 @@ const Books: FC = () => {
       toast({
         title: 'Error on deleting book',
         status: 'error',
+        isClosable: true,
       });
     }
   };
@@ -171,27 +173,27 @@ const Books: FC = () => {
                         <RiHandCoinFill />
                       </Button>
                     </Tooltip>
-                    <Popover placement="left">
-                      <PopoverTrigger>
-                        <Tooltip label="Delete book">
+                    <Tooltip label="Delete book">
+                      <Popover placement="left">
+                        <PopoverTrigger>
                           <Button ml="2" colorScheme="red">
                             <HiTrash />
                           </Button>
-                        </Tooltip>
-                      </PopoverTrigger>
-                      <Portal>
-                        <PopoverContent>
-                          <PopoverArrow />
-                          <PopoverHeader>Are you sure you want to delete this book?</PopoverHeader>
-                          <PopoverCloseButton />
-                          <PopoverBody>
-                            <Button colorScheme="red" onClick={() => onDelete(book._id)}>
-                              Confirm
-                            </Button>
-                          </PopoverBody>
-                        </PopoverContent>
-                      </Portal>
-                    </Popover>
+                        </PopoverTrigger>
+                        <Portal>
+                          <PopoverContent>
+                            <PopoverArrow />
+                            <PopoverHeader>Are you sure you want to delete this book?</PopoverHeader>
+                            <PopoverCloseButton />
+                            <PopoverBody>
+                              <Button colorScheme="red" onClick={() => onDelete(book._id)}>
+                                Confirm
+                              </Button>
+                            </PopoverBody>
+                          </PopoverContent>
+                        </Portal>
+                      </Popover>
+                    </Tooltip>
                   </Td>
                 </Tr>
               );
