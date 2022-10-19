@@ -13,6 +13,13 @@ const App: FC<AppProps> = ({ Component, pageProps }) => {
   const router = useRouter();
   const toast = useToast();
   const isIndex = router.pathname === '/';
+  const hoverStyles = {
+    transition: '0.5s ease-in',
+    _hover: {
+      textDecoration: 'underline',
+      color: 'lightgreen',
+    },
+  };
 
   return (
     <ChakraProvider>
@@ -27,21 +34,21 @@ const App: FC<AppProps> = ({ Component, pageProps }) => {
             <Box height="calc(100vh - 50px)" bg="#2c3e50" w="200px">
               <List padding="20px" spacing="16px">
                 <Link href="/admin/books">
-                  <ListItem cursor="pointer">
+                  <ListItem cursor="pointer" {...hoverStyles}>
                     <ListIcon as={TfiBook} color="green.500" />
                     Books
                   </ListItem>
                 </Link>
 
                 <Link href="/admin/users">
-                  <ListItem cursor="pointer">
+                  <ListItem cursor="pointer" {...hoverStyles}>
                     <ListIcon as={HiUsers} color="green.500" />
                     Users
                   </ListItem>
                 </Link>
 
                 <Link href="/admin/borrowers">
-                  <ListItem cursor="pointer">
+                  <ListItem cursor="pointer" {...hoverStyles}>
                     <ListIcon as={FaBookReader} color="green.500" />
                     Borrowers
                   </ListItem>
@@ -51,7 +58,9 @@ const App: FC<AppProps> = ({ Component, pageProps }) => {
                   cursor="pointer"
                   onClick={() => {
                     router.push('/');
+                    localStorage.removeItem('accessToken');
                   }}
+                  {...hoverStyles}
                 >
                   <ListIcon as={DeleteIcon} color="green.500" />
                   Logout
