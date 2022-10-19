@@ -19,6 +19,7 @@ import {
   PopoverTrigger,
   Portal,
   Select,
+  Spinner,
   Table,
   TableContainer,
   Tbody,
@@ -33,6 +34,7 @@ import {
 } from '@chakra-ui/react';
 import AddBookModal from 'component/AddBookModal';
 import { FC, useEffect, useState } from 'react';
+import { GiNotebook } from 'react-icons/gi';
 import { HiTrash } from 'react-icons/hi';
 import { RiHandCoinFill, RiHealthBookLine } from 'react-icons/ri';
 
@@ -45,11 +47,14 @@ const Books: FC = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { isOpen: isAddBookOpen, onOpen: onAddBookOpen, onClose: onAddBookClose } = useDisclosure();
   const toast = useToast();
+  const [bookLoading, setBookLoading] = useState(false);
 
   const getBooks = async () => {
+    setBookLoading(true);
     const data = await fetch('http://localhost:3002/books');
     const response = await data.json();
     setData(response);
+    setBookLoading(false);
   };
 
   const getUsers = async () => {
@@ -134,73 +139,83 @@ const Books: FC = () => {
         </Button>
       </Box>
 
-      <TableContainer>
-        <Table variant="striped" colorScheme="teal">
-          <Thead>
-            <Tr>
-              <Th>year</Th>
-              <Th>Class</Th>
-              <Th>Title</Th>
-              <Th>Author</Th>
-              <Th>Publisher</Th>
-              <Th>ISBN</Th>
-              <Th>Quantity</Th>
-              <Th>Actions</Th>
-            </Tr>
-          </Thead>
-          <Tbody>
-            {data.map((book: any) => {
-              return (
-                <Tr key={book._id}>
-                  <Td>{book.year}</Td>
-                  <Td>{book.class}</Td>
-                  <Td>{book.title}</Td>
-                  <Td>{book.author}</Td>
-                  <Td>{book.publisher}</Td>
-                  <Td>{book.isbn}</Td>
-                  <Td>{book.quantity}</Td>
-                  <Td>
-                    <Tooltip label="Lend book">
-                      <Button
-                        disabled={!book.quantity}
-                        colorScheme="cyan"
-                        color="white"
-                        onClick={() => {
-                          setSelectedBook(book._id);
-                          openModal(book.quantity);
-                        }}
-                      >
-                        <RiHandCoinFill />
-                      </Button>
-                    </Tooltip>
-                    <Tooltip label="Delete book">
-                      <Popover placement="left">
-                        <PopoverTrigger>
-                          <Button ml="2" colorScheme="red">
-                            <HiTrash />
-                          </Button>
-                        </PopoverTrigger>
-                        <Portal>
-                          <PopoverContent>
-                            <PopoverArrow />
-                            <PopoverHeader>Are you sure you want to delete this book?</PopoverHeader>
-                            <PopoverCloseButton />
-                            <PopoverBody>
-                              <Button colorScheme="red" onClick={() => onDelete(book._id)}>
-                                Confirm
-                              </Button>
-                            </PopoverBody>
-                          </PopoverContent>
-                        </Portal>
-                      </Popover>
-                    </Tooltip>
-                  </Td>
-                </Tr>
-              );
-            })}
-          </Tbody>
-        </Table>
-      </TableContainer>
+      {bookLoading ? (
+        <Spinner size="lg" />
+      ) : (
+        <TableContainer>
+          <Table variant="striped" colorScheme="teal">
+            <Thead>
+              <Tr>
+                <Th>year</Th>
+                <Th>Class</Th>
+                <Th>Title</Th>
+                <Th>Author</Th>
+                <Th>Publisher</Th>
+                <Th>ISBN</Th>
+                <Th>Quantity</Th>
+                <Th>Actions</Th>
+              </Tr>
+            </Thead>
+            <Tbody>
+              {data.map((book: any) => {
+                return (
+                  <Tr key={book._id}>
+                    <Td>{book.year}</Td>
+                    <Td>{book.class}</Td>
+                    <Td>{book.title}</Td>
+                    <Td>{book.author}</Td>
+                    <Td>{book.publisher}</Td>
+                    <Td>{book.isbn}</Td>
+                    <Td>{book.quantity}</Td>
+                    <Td>
+                      <Tooltip label="Lend book">
+                        <Button
+                          disabled={!book.quantity}
+                          colorScheme="cyan"
+                          color="white"
+                          onClick={() => {
+                            setSelectedBook(book._id);
+                            openModal(book.quantity);
+                          }}
+                        >
+                          <RiHandCoinFill />
+                        </Button>
+                      </Tooltip>
+                      <Tooltip label="Delete book">
+                        <Popover placement="left">
+                          <PopoverTrigger>
+                            <Button ml="2" colorScheme="red">
+                              <HiTrash />
+                            </Button>
+                          </PopoverTrigger>
+                          <Portal>
+                            <PopoverContent>
+                              <PopoverArrow />
+                              <PopoverHeader>Are you sure you want to delete this book?</PopoverHeader>
+                              <PopoverCloseButton />
+                              <PopoverBody>
+                                <Button colorScheme="red" onClick={() => onDelete(book._id)}>
+                                  Confirm
+                                </Button>
+                              </PopoverBody>
+                            </PopoverContent>
+                          </Portal>
+                        </Popover>
+                      </Tooltip>
+
+                      <Tooltip label="Update book">
+                        <Button ml="2" colorScheme="orange">
+                          <GiNotebook />
+                        </Button>
+                      </Tooltip>
+                    </Td>
+                  </Tr>
+                );
+              })}
+            </Tbody>
+          </Table>
+        </TableContainer>
+      )}
 
       {/* LEND BOOK MODAL */}
       <Modal isOpen={isOpen} onClose={onClose}>
