@@ -1,10 +1,8 @@
 import {
   Box,
   Button,
-  Flex,
   FormControl,
   FormLabel,
-  Input,
   Modal,
   ModalBody,
   ModalCloseButton,
@@ -12,6 +10,14 @@ import {
   ModalFooter,
   ModalHeader,
   ModalOverlay,
+  Popover,
+  PopoverArrow,
+  PopoverBody,
+  PopoverCloseButton,
+  PopoverContent,
+  PopoverHeader,
+  PopoverTrigger,
+  Portal,
   Select,
   Table,
   TableContainer,
@@ -24,6 +30,7 @@ import {
   useDisclosure,
   useToast,
 } from '@chakra-ui/react';
+import AddBookModal from 'component/AddBookModal';
 import { FC, useEffect, useState } from 'react';
 
 const Books: FC = () => {
@@ -130,6 +137,23 @@ const Books: FC = () => {
                     >
                       Lend
                     </Button>
+                    <Popover placement="left">
+                      <PopoverTrigger>
+                        <Button ml="2" colorScheme="red">
+                          Delete
+                        </Button>
+                      </PopoverTrigger>
+                      <Portal>
+                        <PopoverContent>
+                          <PopoverArrow />
+                          <PopoverHeader>Are you sure you want to delete this book?</PopoverHeader>
+                          <PopoverCloseButton />
+                          <PopoverBody>
+                            <Button colorScheme="red">Confirm</Button>
+                          </PopoverBody>
+                        </PopoverContent>
+                      </Portal>
+                    </Popover>
                   </Td>
                 </Tr>
               );
@@ -176,76 +200,7 @@ const Books: FC = () => {
       </Modal>
 
       {/* ADD BOOK MODAL */}
-      <Modal isOpen={isAddBookOpen} onClose={onAddBookClose} size="xl">
-        <ModalOverlay />
-        <ModalContent>
-          <ModalHeader>Add Book</ModalHeader>
-          <ModalCloseButton />
-          <ModalBody>
-            <Flex justifyContent="space-evenly">
-              <Box>
-                <FormControl>
-                  <FormLabel>Title</FormLabel>
-                  <Input type="text" />
-                </FormControl>
-                <FormControl>
-                  <FormLabel>Author</FormLabel>
-                  <Input type="text" />
-                </FormControl>
-                <FormControl>
-                  <FormLabel>Edition</FormLabel>
-                  <Input type="text" />
-                </FormControl>
-                <FormControl>
-                  <FormLabel>Volume</FormLabel>
-                  <Input type="text" />
-                </FormControl>
-                <FormControl>
-                  <FormLabel>Pages</FormLabel>
-                  <Input type="text" />
-                </FormControl>
-                <FormControl>
-                  <FormLabel>Publisher</FormLabel>
-                  <Input type="text" />
-                </FormControl>
-              </Box>
-              <Box>
-                <FormControl>
-                  <FormLabel>Year</FormLabel>
-                  <Input type="text" />
-                </FormControl>
-                <FormControl>
-                  <FormLabel>Remarks</FormLabel>
-                  <Input type="text" />
-                </FormControl>
-                <FormControl>
-                  <FormLabel>Locator</FormLabel>
-                  <Input type="text" />
-                </FormControl>
-                <FormControl>
-                  <FormLabel>ISBN</FormLabel>
-                  <Input type="text" />
-                </FormControl>
-                <FormControl>
-                  <FormLabel>Class</FormLabel>
-                  <Input type="text" />
-                </FormControl>
-                <FormControl>
-                  <FormLabel>Quantity</FormLabel>
-                  <Input type="text" />
-                </FormControl>
-              </Box>
-            </Flex>
-          </ModalBody>
-
-          <ModalFooter>
-            <Button colorScheme="red" mr={3} onClick={onClose}>
-              Close
-            </Button>
-            <Button colorScheme="teal">Add</Button>
-          </ModalFooter>
-        </ModalContent>
-      </Modal>
+      <AddBookModal prevData={data} isOpen={isAddBookOpen} onClose={onAddBookClose} setData={setData} />
     </Box>
   );
 };
