@@ -18,6 +18,7 @@ import {
   Tr,
   useToast,
 } from '@chakra-ui/react';
+import dayjs from 'dayjs';
 import { FC, useEffect, useState } from 'react';
 
 const Borrowers: FC = () => {
@@ -62,6 +63,7 @@ const Borrowers: FC = () => {
               <Th>Username</Th>
               <Th>Book</Th>
               <Th>Quantity</Th>
+              <Th>Date Borrowed</Th>
               <Th>Actions</Th>
             </Tr>
           </Thead>
@@ -72,6 +74,7 @@ const Borrowers: FC = () => {
                   <Td>{item.borrower.username}</Td>
                   <Td>{item.book.title}</Td>
                   <Td>{item.quantity}</Td>
+                  <Td>{dayjs(item.createdAt).format('MMM DD, YYYY - hh:mm')}</Td>
                   <Td>
                     <Popover placement="left">
                       <PopoverTrigger>
