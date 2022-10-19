@@ -26,12 +26,15 @@ import {
   Text,
   Th,
   Thead,
+  Tooltip,
   Tr,
   useDisclosure,
   useToast,
 } from '@chakra-ui/react';
 import AddBookModal from 'component/AddBookModal';
 import { FC, useEffect, useState } from 'react';
+import { HiTrash } from 'react-icons/hi';
+import { RiHandCoinFill, RiHealthBookLine } from 'react-icons/ri';
 
 const Books: FC = () => {
   const [data, setData] = useState([]);
@@ -117,7 +120,8 @@ const Books: FC = () => {
       <Box d="flex" justifyContent="space-between" alignItems="center" mb="20px">
         <Text fontSize="40px">Books</Text>
         <Button colorScheme="blue" onClick={onAddBookOpen}>
-          Add book
+          <RiHealthBookLine />
+          &nbsp;Add book
         </Button>
       </Box>
 
@@ -147,22 +151,26 @@ const Books: FC = () => {
                   <Td>{book.isbn}</Td>
                   <Td>{book.quantity}</Td>
                   <Td>
-                    <Button
-                      disabled={!book.quantity}
-                      colorScheme="cyan"
-                      color="white"
-                      onClick={() => {
-                        setSelectedBook(book._id);
-                        openModal(book.quantity);
-                      }}
-                    >
-                      Lend
-                    </Button>
+                    <Tooltip label="Lend book">
+                      <Button
+                        disabled={!book.quantity}
+                        colorScheme="cyan"
+                        color="white"
+                        onClick={() => {
+                          setSelectedBook(book._id);
+                          openModal(book.quantity);
+                        }}
+                      >
+                        <RiHandCoinFill />
+                      </Button>
+                    </Tooltip>
                     <Popover placement="left">
                       <PopoverTrigger>
-                        <Button ml="2" colorScheme="red">
-                          Delete
-                        </Button>
+                        <Tooltip label="Delete book">
+                          <Button ml="2" colorScheme="red">
+                            <HiTrash />
+                          </Button>
+                        </Tooltip>
                       </PopoverTrigger>
                       <Portal>
                         <PopoverContent>
