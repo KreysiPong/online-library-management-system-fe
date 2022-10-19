@@ -86,6 +86,27 @@ const Books: FC = () => {
     }
   };
 
+  const onDelete = async (id) => {
+    const deletableBook = await fetch(`http://localhost:3002/books/${id}`, {
+      method: 'DELETE',
+    });
+    const response = await deletableBook.json();
+    if (response.acknowledged) {
+      toast({
+        title: 'Successfully deleted book',
+        status: 'success',
+      });
+      const prevData = [...data];
+      const temp = prevData.filter((q: any) => q._id !== id);
+      setData(temp);
+    } else {
+      toast({
+        title: 'Error on deleting book',
+        status: 'error',
+      });
+    }
+  };
+
   useEffect(() => {
     getBooks();
     getUsers();
@@ -149,7 +170,9 @@ const Books: FC = () => {
                           <PopoverHeader>Are you sure you want to delete this book?</PopoverHeader>
                           <PopoverCloseButton />
                           <PopoverBody>
-                            <Button colorScheme="red">Confirm</Button>
+                            <Button colorScheme="red" onClick={() => onDelete(book._id)}>
+                              Confirm
+                            </Button>
                           </PopoverBody>
                         </PopoverContent>
                       </Portal>
