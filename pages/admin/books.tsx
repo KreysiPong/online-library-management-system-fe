@@ -84,9 +84,16 @@ const Books: FC = () => {
         isClosable: true,
       });
       onClose();
-      setLendLoading(false);
+
       getBooks();
+    } else {
+      toast({
+        title: 'Error upon lending book',
+        status: 'error',
+        isClosable: true,
+      });
     }
+    setLendLoading(false);
   };
 
   const onDelete = async (id) => {

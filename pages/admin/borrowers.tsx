@@ -1,8 +1,28 @@
-import { Box, Button, Table, TableContainer, Tbody, Td, Text, Th, Thead, Tr } from '@chakra-ui/react';
+import {
+  Box,
+  Button,
+  Popover,
+  PopoverArrow,
+  PopoverBody,
+  PopoverCloseButton,
+  PopoverContent,
+  PopoverHeader,
+  PopoverTrigger,
+  Table,
+  TableContainer,
+  Tbody,
+  Td,
+  Text,
+  Th,
+  Thead,
+  Tr,
+  useToast,
+} from '@chakra-ui/react';
 import { FC, useEffect, useState } from 'react';
 
 const Borrowers: FC = () => {
   const [data, setData] = useState([]);
+  const toast = useToast();
 
   const load = async () => {
     const data = await fetch('http://localhost:3002/borrow');
@@ -13,6 +33,21 @@ const Borrowers: FC = () => {
   useEffect(() => {
     load();
   }, []);
+
+  const takeBack = async (id) => {
+    const response = await fetch(`http://localhost:3002/borrow/return/${id}`, {
+      method: 'POST',
+    });
+    const json = await response.json();
+
+    if (json.status) {
+      load();
+      toast({
+        title: 'Successfully returned book',
+        status: 'success',
+      });
+    }
+  };
 
   return (
     <Box>
@@ -38,7 +73,25 @@ const Borrowers: FC = () => {
                   <Td>{item.book.title}</Td>
                   <Td>{item.quantity}</Td>
                   <Td>
-                    <Button colorScheme="blue">Take back</Button>
+                    <Popover placement="left">
+                      <PopoverTrigger>
+                        <Button colorScheme="blue">Take back</Button>
+                      </PopoverTrigger>
+                      <PopoverContent>
+                        <PopoverArrow />
+                        <PopoverCloseButton />
+                        <PopoverHeader>Confirmation!</PopoverHeader>
+                        <PopoverBody>
+                          <Box>
+                            Are you sure you want to take this back?
+                            <br />
+                            <Button mt="4" colorScheme="blue" onClick={() => takeBack(item._id)}>
+                              Confirm
+                            </Button>
+                          </Box>
+                        </PopoverBody>
+                      </PopoverContent>
+                    </Popover>
                   </Td>
                 </Tr>
               );
