@@ -264,7 +264,7 @@ const Books: FC = () => {
               <FormLabel>Book</FormLabel>
               <Select placeholder="Select book" onChange={(e) => setSelectedBook(e.target.value)}>
                 {data
-                  .filter((q) => q.quantity)
+                  .filter((q: any) => q.quantity)
                   .map((q: any) => {
                     return <option value={q._id}>{q.title}</option>;
                   })}
