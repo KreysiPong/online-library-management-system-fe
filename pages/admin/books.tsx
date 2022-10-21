@@ -67,10 +67,8 @@ const Books: FC = () => {
     setUsers(response.data);
   };
 
-  const openModal = (quantity: number) => {
-    if (quantity) {
-      onOpen();
-    }
+  const openModal = () => {
+    onOpen();
   };
 
   const lend = async () => {
@@ -88,7 +86,7 @@ const Books: FC = () => {
     const response = await data.json();
     if (response.status) {
       toast({
-        title: 'Lend book successfully',
+        title: 'Borrow book successfully',
         status: 'success',
         isClosable: true,
       });
@@ -140,10 +138,24 @@ const Books: FC = () => {
           <Text fontSize="40px">Books</Text>
           <Input placeholder="Search" marginLeft="30px" border="1px solid lightgray" />
         </Box>
-        <Button colorScheme="blue" onClick={onAddBookOpen}>
-          <RiHealthBookLine />
-          &nbsp;Add book
-        </Button>
+        <Box>
+          <Button
+            colorScheme="cyan"
+            color="white"
+            onClick={() => {
+              // setSelectedBook(book._id);
+              openModal();
+            }}
+            marginRight="8px"
+          >
+            <RiHandCoinFill />
+            &nbsp;Borrow book
+          </Button>
+          <Button colorScheme="blue" onClick={onAddBookOpen}>
+            <RiHealthBookLine />
+            &nbsp;Add book
+          </Button>
+        </Box>
       </Box>
 
       {bookLoading ? (
@@ -179,19 +191,6 @@ const Books: FC = () => {
                       {book.quantity > 20 && <Tag colorScheme="green">{book.quantity}</Tag>}
                     </Td>
                     <Td>
-                      <Tooltip label="Borrow">
-                        <Button
-                          disabled={!book.quantity}
-                          colorScheme="cyan"
-                          color="white"
-                          onClick={() => {
-                            setSelectedBook(book._id);
-                            openModal(book.quantity);
-                          }}
-                        >
-                          <RiHandCoinFill />
-                        </Button>
-                      </Tooltip>
                       <Tooltip label="Delete book">
                         <Popover placement="left">
                           <PopoverTrigger>
@@ -228,11 +227,11 @@ const Books: FC = () => {
         </TableContainer>
       )}
 
-      {/* LEND BOOK MODAL */}
+      {/* Borrow BOOK MODAL */}
       <Modal isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
         <ModalContent>
-          <ModalHeader>Lend Book</ModalHeader>
+          <ModalHeader>Borrow Book</ModalHeader>
           <ModalCloseButton />
           <ModalBody>
             <FormControl>

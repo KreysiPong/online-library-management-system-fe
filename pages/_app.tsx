@@ -54,6 +54,13 @@ const App: FC<AppProps> = ({ Component, pageProps }) => {
                   </ListItem>
                 </Link>
 
+                <Link href="/admin/audit-log">
+                  <ListItem cursor="pointer" {...hoverStyles}>
+                    <ListIcon as={FaBookReader} color="green.500" />
+                    Audit Log
+                  </ListItem>
+                </Link>
+
                 <ListItem
                   cursor="pointer"
                   onClick={() => {
