@@ -3,6 +3,7 @@ import {
   Button,
   FormControl,
   FormLabel,
+  Input,
   Modal,
   ModalBody,
   ModalCloseButton,
@@ -22,6 +23,7 @@ import {
   Spinner,
   Table,
   TableContainer,
+  Tag,
   Tbody,
   Td,
   Text,
@@ -40,6 +42,8 @@ import { RiHandCoinFill, RiHealthBookLine } from 'react-icons/ri';
 
 const Books: FC = () => {
   const [data, setData] = useState([]);
+  const [prevData, setPrevData] = useState([]);
+  const [searchText, setSearchText] = useState([]);
   const [users, setUsers] = useState([]);
   const [selectedUser, setSelectedUser] = useState('');
   const [selectedBook, setSelectedBook] = useState('');
@@ -132,7 +136,10 @@ const Books: FC = () => {
   return (
     <Box>
       <Box d="flex" justifyContent="space-between" alignItems="center" mb="20px">
-        <Text fontSize="40px">Books</Text>
+        <Box d="flex" alignItems="center">
+          <Text fontSize="40px">Books</Text>
+          <Input placeholder="Search" marginLeft="30px" border="1px solid lightgray" />
+        </Box>
         <Button colorScheme="blue" onClick={onAddBookOpen}>
           <RiHealthBookLine />
           &nbsp;Add book
@@ -143,7 +150,7 @@ const Books: FC = () => {
         <Spinner size="lg" />
       ) : (
         <TableContainer>
-          <Table variant="striped" colorScheme="teal">
+          <Table size="sm">
             <Thead>
               <Tr>
                 <Th>year</Th>
@@ -166,9 +173,13 @@ const Books: FC = () => {
                     <Td>{book.author}</Td>
                     <Td>{book.publisher}</Td>
                     <Td>{book.isbn}</Td>
-                    <Td>{book.quantity}</Td>
                     <Td>
-                      <Tooltip label="Lend book">
+                      {book.quantity < 5 && <Tag colorScheme="red">{book.quantity}</Tag>}
+                      {book.quantity > 5 && book.quantity < 20 && <Tag colorScheme="orange">{book.quantity}</Tag>}
+                      {book.quantity > 20 && <Tag colorScheme="green">{book.quantity}</Tag>}
+                    </Td>
+                    <Td>
+                      <Tooltip label="Borrow">
                         <Button
                           disabled={!book.quantity}
                           colorScheme="cyan"

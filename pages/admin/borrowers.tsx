@@ -85,7 +85,9 @@ const Borrowers: FC = () => {
                     <Td>
                       <Popover placement="left">
                         <PopoverTrigger>
-                          <Button colorScheme="blue">Take back</Button>
+                          <Button colorScheme="blue" size="sm">
+                            Return
+                          </Button>
                         </PopoverTrigger>
                         <PopoverContent>
                           <PopoverArrow />

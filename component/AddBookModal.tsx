@@ -15,6 +15,7 @@ import {
   useToast,
 } from '@chakra-ui/react';
 import { useState } from 'react';
+import RequiredFields from './RequiredFields';
 
 const AddBookModal = ({ isOpen, onClose, setData, prevData }) => {
   // ADD BOOK STATES
@@ -118,37 +119,53 @@ const AddBookModal = ({ isOpen, onClose, setData, prevData }) => {
             <Flex justifyContent="space-evenly">
               <Box>
                 <FormControl>
-                  <FormLabel>Title</FormLabel>
+                  <FormLabel>
+                    Title <RequiredFields />
+                  </FormLabel>
                   <Input type="text" value={title} onChange={(e) => setTitle(e.target.value)} />
                 </FormControl>
                 <FormControl>
-                  <FormLabel>Author</FormLabel>
+                  <FormLabel>
+                    Author <RequiredFields />
+                  </FormLabel>
                   <Input type="text" value={author} onChange={(e) => setAuthor(e.target.value)} />
                 </FormControl>
                 <FormControl>
-                  <FormLabel>Edition</FormLabel>
+                  <FormLabel>
+                    Edition <RequiredFields />
+                  </FormLabel>
                   <Input type="text" value={edition} onChange={(e) => setEdition(e.target.value)} />
                 </FormControl>
                 <FormControl>
-                  <FormLabel>Volume</FormLabel>
+                  <FormLabel>
+                    Volume <RequiredFields />
+                  </FormLabel>
                   <Input type="text" value={volume} onChange={(e) => setVolume(e.target.value)} />
                 </FormControl>
                 <FormControl>
-                  <FormLabel>Pages</FormLabel>
+                  <FormLabel>
+                    Pages <RequiredFields />
+                  </FormLabel>
                   <Input type="number" value={pages} onChange={(e) => setPages(parseInt(e.target.value))} />
                 </FormControl>
                 <FormControl>
-                  <FormLabel>Publisher</FormLabel>
+                  <FormLabel>
+                    Publisher <RequiredFields />
+                  </FormLabel>
                   <Input type="text" value={publisher} onChange={(e) => setPublisher(e.target.value)} />
                 </FormControl>
                 <FormControl>
-                  <FormLabel>Class</FormLabel>
+                  <FormLabel>
+                    Class <RequiredFields />
+                  </FormLabel>
                   <Input type="text" value={className} onChange={(e) => setClassName(e.target.value)} />
                 </FormControl>
               </Box>
               <Box>
                 <FormControl>
-                  <FormLabel>Year</FormLabel>
+                  <FormLabel>
+                    Year <RequiredFields />
+                  </FormLabel>
                   <Input type="number" value={year} onChange={(e) => setYear(e.target.value)} />
                 </FormControl>
                 <FormControl>
@@ -156,11 +173,15 @@ const AddBookModal = ({ isOpen, onClose, setData, prevData }) => {
                   <Input type="text" value={remarks} onChange={(e) => setRemarks(e.target.value)} />
                 </FormControl>
                 <FormControl>
-                  <FormLabel>Locator</FormLabel>
+                  <FormLabel>
+                    Locator <RequiredFields />
+                  </FormLabel>
                   <Input type="text" value={locator} onChange={(e) => setLocator(e.target.value)} />
                 </FormControl>
                 <FormControl>
-                  <FormLabel>ISBN</FormLabel>
+                  <FormLabel>
+                    ISBN <RequiredFields />
+                  </FormLabel>
                   <Input type="text" value={isbn} onChange={(e) => setIsbn(e.target.value)} />
                 </FormControl>
                 <FormControl>
@@ -168,7 +189,9 @@ const AddBookModal = ({ isOpen, onClose, setData, prevData }) => {
                   <Input type="text" value={sourceOfFund} onChange={(e) => setSourceOfFund(e.target.value)} />
                 </FormControl>
                 <FormControl>
-                  <FormLabel>Quantity</FormLabel>
+                  <FormLabel>
+                    Quantity <RequiredFields />
+                  </FormLabel>
                   <Input type="number" value={quantity} onChange={(e) => setQuantity(parseInt(e.target.value))} />
                 </FormControl>
               </Box>

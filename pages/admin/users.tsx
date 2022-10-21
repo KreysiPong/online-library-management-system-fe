@@ -30,7 +30,7 @@ const Users: FC = () => {
         <Spinner size="lg" />
       ) : (
         <TableContainer>
-          <Table variant="striped" colorScheme="teal">
+          <Table variant="striped" colorScheme="teal" size="sm">
             <Thead>
               <Tr>
                 <Th>Full Name</Th>
