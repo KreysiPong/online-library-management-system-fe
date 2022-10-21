@@ -35,6 +35,7 @@ import {
   useToast,
 } from '@chakra-ui/react';
 import AddBookModal from 'component/AddBookModal';
+import dayjs from 'dayjs';
 import { FC, useEffect, useState } from 'react';
 import { GiNotebook } from 'react-icons/gi';
 import { HiTrash } from 'react-icons/hi';
@@ -170,6 +171,7 @@ const Books: FC = () => {
                 <Th>Title</Th>
                 <Th>Author</Th>
                 <Th>Publisher</Th>
+                <Th>Date Acquired</Th>
                 <Th>ISBN</Th>
                 <Th>Quantity</Th>
                 <Th>Actions</Th>
@@ -184,6 +186,7 @@ const Books: FC = () => {
                     <Td>{book.title}</Td>
                     <Td>{book.author}</Td>
                     <Td>{book.publisher}</Td>
+                    <Td>{dayjs(book.createdAt).format('MMM DD,YYYY HH:mm')}</Td>
                     <Td>{book.isbn}</Td>
                     <Td>
                       {book.quantity < 5 && <Tag colorScheme="red">{book.quantity}</Tag>}

@@ -4,8 +4,10 @@ import { AppProps } from 'next/app';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { FC } from 'react';
+import { CgList } from 'react-icons/cg';
 import { FaBookReader } from 'react-icons/fa';
 import { HiUsers } from 'react-icons/hi';
+import { IoTrashBinSharp } from 'react-icons/io5';
 import { TfiBook } from 'react-icons/tfi';
 
 // App is global
@@ -14,6 +16,7 @@ const App: FC<AppProps> = ({ Component, pageProps }) => {
   const toast = useToast();
   const isIndex = router.pathname === '/';
   const hoverStyles = {
+    fontSize: '20px',
     transition: '0.5s ease-in',
     _hover: {
       textDecoration: 'underline',
@@ -31,12 +34,19 @@ const App: FC<AppProps> = ({ Component, pageProps }) => {
 
           <Flex color="white">
             {/* LEFT SIDEBAR */}
-            <Box height="calc(100vh - 50px)" bg="#2c3e50" w="200px">
+            <Box height="calc(100vh - 50px)" bg="#2c3e50" w="250px">
               <List padding="20px" spacing="16px">
                 <Link href="/admin/books">
                   <ListItem cursor="pointer" {...hoverStyles}>
                     <ListIcon as={TfiBook} color="green.500" />
                     Books
+                  </ListItem>
+                </Link>
+
+                <Link href="/admin/archived-books">
+                  <ListItem cursor="pointer" {...hoverStyles}>
+                    <ListIcon as={IoTrashBinSharp} color="green.500" />
+                    Archived Books
                   </ListItem>
                 </Link>
 
@@ -56,7 +66,7 @@ const App: FC<AppProps> = ({ Component, pageProps }) => {
 
                 <Link href="/admin/audit-log">
                   <ListItem cursor="pointer" {...hoverStyles}>
-                    <ListIcon as={FaBookReader} color="green.500" />
+                    <ListIcon as={CgList} color="green.500" />
                     Audit Log
                   </ListItem>
                 </Link>
