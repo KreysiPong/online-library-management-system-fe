@@ -246,6 +246,15 @@ const Books: FC = () => {
                 })}
               </Select>
             </FormControl>
+
+            <FormControl marginTop="15px">
+              <FormLabel>Book</FormLabel>
+              <Select placeholder="Select book" onChange={(e) => setSelectedBook(e.target.value)}>
+                {data.map((q: any) => {
+                  return <option value={q._id}>{q.title}</option>;
+                })}
+              </Select>
+            </FormControl>
           </ModalBody>
 
           <ModalFooter>
