@@ -1,4 +1,7 @@
 import {
+  Alert,
+  AlertIcon,
+  AlertTitle,
   Box,
   Button,
   FormControl,
@@ -133,6 +136,8 @@ const Books: FC = () => {
     getUsers();
   }, []);
 
+  const books = data.filter((q: any) => q.title.toLowerCase().includes(searchText.toLowerCase()));
+
   return (
     <Box>
       <Box d="flex" justifyContent="space-between" alignItems="center" mb="20px">
@@ -170,74 +175,81 @@ const Books: FC = () => {
       {bookLoading ? (
         <Spinner size="lg" />
       ) : (
-        <TableContainer>
-          <Table size="sm">
-            <Thead>
-              <Tr>
-                <Th>year</Th>
-                <Th>Class</Th>
-                <Th>Title</Th>
-                <Th>Author</Th>
-                <Th>Publisher</Th>
-                <Th>Date Acquired</Th>
-                <Th>ISBN</Th>
-                <Th>Quantity</Th>
-                <Th>Actions</Th>
-              </Tr>
-            </Thead>
-            <Tbody>
-              {data
-                .filter((q: any) => q.title.toLowerCase().includes(searchText.toLowerCase()))
-                .map((book: any) => {
-                  return (
-                    <Tr key={book._id}>
-                      <Td>{book.year}</Td>
-                      <Td>{book.class}</Td>
-                      <Td>{book.title}</Td>
-                      <Td>{book.author}</Td>
-                      <Td>{book.publisher}</Td>
-                      <Td>{dayjs(book.createdAt).format('MMM DD,YYYY HH:mm')}</Td>
-                      <Td>{book.isbn}</Td>
-                      <Td>
-                        {book.quantity < 5 && <Tag colorScheme="red">{book.quantity}</Tag>}
-                        {book.quantity > 5 && book.quantity < 20 && <Tag colorScheme="orange">{book.quantity}</Tag>}
-                        {book.quantity > 20 && <Tag colorScheme="green">{book.quantity}</Tag>}
-                      </Td>
-                      <Td>
-                        <Tooltip label="Delete book">
-                          <Popover placement="left">
-                            <PopoverTrigger>
-                              <Button ml="2" colorScheme="red">
-                                <HiTrash />
-                              </Button>
-                            </PopoverTrigger>
-                            <Portal>
-                              <PopoverContent>
-                                <PopoverArrow />
-                                <PopoverHeader>Are you sure you want to delete this book?</PopoverHeader>
-                                <PopoverCloseButton />
-                                <PopoverBody>
-                                  <Button colorScheme="red" onClick={() => onDelete(book._id)}>
-                                    Confirm
-                                  </Button>
-                                </PopoverBody>
-                              </PopoverContent>
-                            </Portal>
-                          </Popover>
-                        </Tooltip>
+        <>
+          {books.length ? (
+            <TableContainer>
+              <Table size="sm">
+                <Thead>
+                  <Tr>
+                    <Th>year</Th>
+                    <Th>Class</Th>
+                    <Th>Title</Th>
+                    <Th>Author</Th>
+                    <Th>Publisher</Th>
+                    <Th>Date Acquired</Th>
+                    <Th>ISBN</Th>
+                    <Th>Quantity</Th>
+                    <Th>Actions</Th>
+                  </Tr>
+                </Thead>
+                <Tbody>
+                  {books.map((book: any) => {
+                    return (
+                      <Tr key={book._id}>
+                        <Td>{book.year}</Td>
+                        <Td>{book.class}</Td>
+                        <Td>{book.title}</Td>
+                        <Td>{book.author}</Td>
+                        <Td>{book.publisher}</Td>
+                        <Td>{dayjs(book.createdAt).format('MMM DD,YYYY HH:mm')}</Td>
+                        <Td>{book.isbn}</Td>
+                        <Td>
+                          {book.quantity < 5 && <Tag colorScheme="red">{book.quantity}</Tag>}
+                          {book.quantity > 5 && book.quantity < 20 && <Tag colorScheme="orange">{book.quantity}</Tag>}
+                          {book.quantity > 20 && <Tag colorScheme="green">{book.quantity}</Tag>}
+                        </Td>
+                        <Td>
+                          <Tooltip label="Delete book">
+                            <Popover placement="left">
+                              <PopoverTrigger>
+                                <Button ml="2" colorScheme="red">
+                                  <HiTrash />
+                                </Button>
+                              </PopoverTrigger>
+                              <Portal>
+                                <PopoverContent>
+                                  <PopoverArrow />
+                                  <PopoverHeader>Are you sure you want to delete this book?</PopoverHeader>
+                                  <PopoverCloseButton />
+                                  <PopoverBody>
+                                    <Button colorScheme="red" onClick={() => onDelete(book._id)}>
+                                      Confirm
+                                    </Button>
+                                  </PopoverBody>
+                                </PopoverContent>
+                              </Portal>
+                            </Popover>
+                          </Tooltip>
 
-                        <Tooltip label="Update book">
-                          <Button ml="2" colorScheme="orange">
-                            <GiNotebook />
-                          </Button>
-                        </Tooltip>
-                      </Td>
-                    </Tr>
-                  );
-                })}
-            </Tbody>
-          </Table>
-        </TableContainer>
+                          <Tooltip label="Update book">
+                            <Button ml="2" colorScheme="orange">
+                              <GiNotebook />
+                            </Button>
+                          </Tooltip>
+                        </Td>
+                      </Tr>
+                    );
+                  })}
+                </Tbody>
+              </Table>
+            </TableContainer>
+          ) : (
+            <Alert status="error">
+              <AlertIcon />
+              <AlertTitle>No Books Found!</AlertTitle>
+            </Alert>
+          )}
+        </>
       )}
 
       {/* Borrow BOOK MODAL */}
