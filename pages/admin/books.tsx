@@ -43,8 +43,8 @@ import { RiHandCoinFill, RiHealthBookLine } from 'react-icons/ri';
 
 const Books: FC = () => {
   const [data, setData] = useState([]);
-  const [prevData, setPrevData] = useState([]);
-  const [searchText, setSearchText] = useState([]);
+
+  const [searchText, setSearchText] = useState('');
   const [users, setUsers] = useState([]);
   const [selectedUser, setSelectedUser] = useState('');
   const [selectedBook, setSelectedBook] = useState('');
@@ -59,6 +59,7 @@ const Books: FC = () => {
     const data = await fetch('http://localhost:3002/books');
     const response = await data.json();
     setData(response);
+
     setBookLoading(false);
   };
 
@@ -137,7 +138,14 @@ const Books: FC = () => {
       <Box d="flex" justifyContent="space-between" alignItems="center" mb="20px">
         <Box d="flex" alignItems="center">
           <Text fontSize="40px">Books</Text>
-          <Input placeholder="Search" marginLeft="30px" border="1px solid lightgray" />
+          <Input
+            placeholder="Search"
+            marginLeft="30px"
+            border="1px solid lightgray"
+            onChange={(e) => {
+              setSearchText(e.target.value);
+            }}
+          />
         </Box>
         <Box>
           <Button
@@ -178,53 +186,55 @@ const Books: FC = () => {
               </Tr>
             </Thead>
             <Tbody>
-              {data.map((book: any) => {
-                return (
-                  <Tr key={book._id}>
-                    <Td>{book.year}</Td>
-                    <Td>{book.class}</Td>
-                    <Td>{book.title}</Td>
-                    <Td>{book.author}</Td>
-                    <Td>{book.publisher}</Td>
-                    <Td>{dayjs(book.createdAt).format('MMM DD,YYYY HH:mm')}</Td>
-                    <Td>{book.isbn}</Td>
-                    <Td>
-                      {book.quantity < 5 && <Tag colorScheme="red">{book.quantity}</Tag>}
-                      {book.quantity > 5 && book.quantity < 20 && <Tag colorScheme="orange">{book.quantity}</Tag>}
-                      {book.quantity > 20 && <Tag colorScheme="green">{book.quantity}</Tag>}
-                    </Td>
-                    <Td>
-                      <Tooltip label="Delete book">
-                        <Popover placement="left">
-                          <PopoverTrigger>
-                            <Button ml="2" colorScheme="red">
-                              <HiTrash />
-                            </Button>
-                          </PopoverTrigger>
-                          <Portal>
-                            <PopoverContent>
-                              <PopoverArrow />
-                              <PopoverHeader>Are you sure you want to delete this book?</PopoverHeader>
-                              <PopoverCloseButton />
-                              <PopoverBody>
-                                <Button colorScheme="red" onClick={() => onDelete(book._id)}>
-                                  Confirm
-                                </Button>
-                              </PopoverBody>
-                            </PopoverContent>
-                          </Portal>
-                        </Popover>
-                      </Tooltip>
+              {data
+                .filter((q: any) => q.title.toLowerCase().includes(searchText.toLowerCase()))
+                .map((book: any) => {
+                  return (
+                    <Tr key={book._id}>
+                      <Td>{book.year}</Td>
+                      <Td>{book.class}</Td>
+                      <Td>{book.title}</Td>
+                      <Td>{book.author}</Td>
+                      <Td>{book.publisher}</Td>
+                      <Td>{dayjs(book.createdAt).format('MMM DD,YYYY HH:mm')}</Td>
+                      <Td>{book.isbn}</Td>
+                      <Td>
+                        {book.quantity < 5 && <Tag colorScheme="red">{book.quantity}</Tag>}
+                        {book.quantity > 5 && book.quantity < 20 && <Tag colorScheme="orange">{book.quantity}</Tag>}
+                        {book.quantity > 20 && <Tag colorScheme="green">{book.quantity}</Tag>}
+                      </Td>
+                      <Td>
+                        <Tooltip label="Delete book">
+                          <Popover placement="left">
+                            <PopoverTrigger>
+                              <Button ml="2" colorScheme="red">
+                                <HiTrash />
+                              </Button>
+                            </PopoverTrigger>
+                            <Portal>
+                              <PopoverContent>
+                                <PopoverArrow />
+                                <PopoverHeader>Are you sure you want to delete this book?</PopoverHeader>
+                                <PopoverCloseButton />
+                                <PopoverBody>
+                                  <Button colorScheme="red" onClick={() => onDelete(book._id)}>
+                                    Confirm
+                                  </Button>
+                                </PopoverBody>
+                              </PopoverContent>
+                            </Portal>
+                          </Popover>
+                        </Tooltip>
 
-                      <Tooltip label="Update book">
-                        <Button ml="2" colorScheme="orange">
-                          <GiNotebook />
-                        </Button>
-                      </Tooltip>
-                    </Td>
-                  </Tr>
-                );
-              })}
+                        <Tooltip label="Update book">
+                          <Button ml="2" colorScheme="orange">
+                            <GiNotebook />
+                          </Button>
+                        </Tooltip>
+                      </Td>
+                    </Tr>
+                  );
+                })}
             </Tbody>
           </Table>
         </TableContainer>
@@ -253,9 +263,11 @@ const Books: FC = () => {
             <FormControl marginTop="15px">
               <FormLabel>Book</FormLabel>
               <Select placeholder="Select book" onChange={(e) => setSelectedBook(e.target.value)}>
-                {data.map((q: any) => {
-                  return <option value={q._id}>{q.title}</option>;
-                })}
+                {data
+                  .filter((q) => q.quantity)
+                  .map((q: any) => {
+                    return <option value={q._id}>{q.title}</option>;
+                  })}
               </Select>
             </FormControl>
           </ModalBody>
