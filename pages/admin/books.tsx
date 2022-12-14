@@ -146,23 +146,23 @@ const Books: FC = () => {
     getUsers();
   }, []);
 
-  const handleScroll = async (e): Promise<void> => {
+  const loadMore = async (): Promise<void> => {
     // https://stackoverflow.com/a/34550171/7881576 - How to detect if the user has scrolled to the bottom
-    const element = e.target;
-    if (element?.scrollHeight - element?.scrollTop === element?.clientHeight) {
-      // console.log('scrolled');
-      setFetching(true);
-      const fetched = await fetch(
-        `http://localhost:3002/books?${new URLSearchParams({
-          page: `${page + 1}`,
-        })}`
-      );
+    // const element = e.target;
+    // if (element?.scrollHeight - element?.scrollTop === element?.clientHeight) {
+    //   // console.log('scrolled');
+    setFetching(true);
+    const fetched = await fetch(
+      `http://localhost:3002/books?${new URLSearchParams({
+        page: `${page + 1}`,
+      })}`
+    );
 
-      const response = await fetched.json();
-      setData([...data, ...response]);
-      setPage(page + 1);
-      setFetching(false);
-    }
+    const response = await fetched.json();
+    setData([...data, ...response]);
+    setPage(page + 1);
+    setFetching(false);
+    // }
   };
 
   const books = data.filter((q: any) => q.title.toLowerCase().includes(searchText.toLowerCase()));
@@ -337,7 +337,7 @@ const Books: FC = () => {
         <Spinner size="lg" />
       ) : (
         <>
-          <Box height="70vh" overflow="scroll" overflowX="hidden" onScroll={handleScroll}>
+          <Box height="70vh" overflow="scroll" overflowX="hidden">
             {books.length ? (
               <TableContainer>
                 <Table size="sm">
@@ -417,12 +417,12 @@ const Books: FC = () => {
               </Alert>
             )}
           </Box>
-          {fetching && (
-            <Box display="flex" justifyContent="center" mt="10" fontSize="14px" color="gray">
-              Loading more books...&nbsp;
-              <Spinner size="sm" />
-            </Box>
-          )}
+
+          <Center>
+            <Button colorScheme="blue" mt="3" isLoading={fetching} onClick={loadMore}>
+              Load More
+            </Button>
+          </Center>
         </>
       )}
 
