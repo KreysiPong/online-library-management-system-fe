@@ -161,42 +161,55 @@ const Books: FC = () => {
           onChange={(e) => {
             e.preventDefault();
 
-            console.log('hehe');
-            var files = e.target.files,
+            const files = e.target.files,
               f = files?.[0];
 
-            var reader = new FileReader();
+            const reader = new FileReader();
             reader.onload = function (e) {
               console.log('umabot ba dito?');
-              var data = (e.target as any).result;
+              const data = (e.target as any).result;
               let readedData = XLSX.read(data, { type: 'binary' });
               const wsname = readedData.SheetNames[0];
               const ws = readedData.Sheets[wsname];
 
               const dataParse = XLSX.utils.sheet_to_json(ws, { header: 1 });
+              const book = {};
               dataParse.map(async (q: Array<any>, i) => {
                 if (i !== 0) {
                   if (q.length > 13) {
-                    console.log({
-                      class: q[2],
-                      author: q[3],
-                      title: q[4],
-                      edition: q[5],
-                      volume: q[6],
-                      pages: q[7],
-                      source_of_fund: q[8],
-                      publisher: q[9],
-                      year: q[10],
-                      remarks: q[11],
-                      locator: q[12],
-                      isbn: q[13],
-                    });
-                    const data = await fetch('http://localhost:3002/books/create', {
-                      method: 'POST',
-                      headers: {
-                        'Content-type': 'application/json',
-                      },
-                      body: JSON.stringify({
+                    if (book[q[4]]) {
+                      const temp = book[q[4]];
+
+                      if (
+                        temp.title === q[4] &&
+                        temp.isbn === q[13] &&
+                        temp.year === q[10] &&
+                        temp.publisher === q[9] &&
+                        temp.pages === q[7] &&
+                        temp.edition === q[5] &&
+                        temp.author === q[3] &&
+                        temp.class === q[2]
+                      ) {
+                        temp.quantity = temp.quantity + 1;
+                      } else {
+                        book[`${q[4]} v2`] = {
+                          class: q[2],
+                          author: q[3],
+                          title: q[4],
+                          edition: q[5],
+                          volume: q[6],
+                          pages: q[7],
+                          source_of_fund: q[8],
+                          publisher: q[9],
+                          year: q[10],
+                          remarks: q[11],
+                          locator: q[12],
+                          isbn: q[13],
+                          quantity: 1,
+                        };
+                      }
+                    } else {
+                      book[q[4]] = {
                         class: q[2],
                         author: q[3],
                         title: q[4],
@@ -209,12 +222,51 @@ const Books: FC = () => {
                         remarks: q[11],
                         locator: q[12],
                         isbn: q[13],
-                      }),
-                    });
-                    console.log(`${i}/${dataParse.length - 1}`);
+                        quantity: 1,
+                      };
+                    }
+
+                    // console.log({
+                    //   class: q[2],
+                    //   author: q[3],
+                    //   title: q[4],
+                    //   edition: q[5],
+                    //   volume: q[6],
+                    //   pages: q[7],
+                    //   source_of_fund: q[8],
+                    //   publisher: q[9],
+                    //   year: q[10],
+                    //   remarks: q[11],
+                    //   locator: q[12],
+                    //   isbn: q[13],
+                    //   quantity: 1,
+                    // });
+                    // const data = await fetch('http://localhost:3002/books/create', {
+                    //   method: 'POST',
+                    //   headers: {
+                    //     'Content-type': 'application/json',
+                    //   },
+                    //   body: JSON.stringify({
+                    //     class: q[2],
+                    //     author: q[3],
+                    //     title: q[4],
+                    //     edition: q[5],
+                    //     volume: q[6],
+                    //     pages: q[7],
+                    //     source_of_fund: q[8],
+                    //     publisher: q[9],
+                    //     year: q[10],
+                    //     remarks: q[11],
+                    //     locator: q[12],
+                    //     isbn: q[13],
+                    //   }),
+                    // });
+                    // console.log(`${i}/${dataParse.length - 1}`);
                   }
                 }
               });
+
+              console.log(book);
             };
             reader.readAsBinaryString(f as any);
           }}
@@ -339,10 +391,10 @@ const Books: FC = () => {
           <ModalBody>
             <FormControl>
               <FormLabel>Student</FormLabel>
-              <Select placeholder="Select student" onChange={(e) => setSelectedUser(e.target.value)}>
+              <Select placeholder="Select student" onChange={(e): void => setSelectedUser(e.target.value)}>
                 {users.map((user: any) => {
                   return (
-                    <option value={user._id}>
+                    <option key={user._id} value={user._id}>
                       {user.first_name} {user.last_name}
                     </option>
                   );
