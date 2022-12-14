@@ -48,7 +48,7 @@ import { SiMicrosoftexcel } from 'react-icons/si';
 import * as XLSX from 'xlsx';
 
 const Books: FC = () => {
-  const [data, setData] = useState([]);
+  const [data, setData] = useState<any>([]);
 
   const [searchText, setSearchText] = useState('');
   const [users, setUsers] = useState([]);
@@ -60,10 +60,16 @@ const Books: FC = () => {
   const toast = useToast();
   const [bookLoading, setBookLoading] = useState(false);
   const [importing, setImporting] = useState(false);
+  const [page, setPage] = useState(1);
+  const [fetching, setFetching] = useState(false);
 
   const getBooks = async () => {
     setBookLoading(true);
-    const data = await fetch('http://localhost:3002/books');
+    const data = await fetch(
+      `http://localhost:3002/books?${new URLSearchParams({
+        page: `${page}`,
+      })}`
+    );
     const response = await data.json();
     setData(response);
 
@@ -71,7 +77,7 @@ const Books: FC = () => {
   };
 
   const getUsers = async () => {
-    const data = await fetch('http://localhost:3002/users');
+    const data = await fetch(`http://localhost:3002/users`);
     const response = await data.json();
     setUsers(response.data);
   };
@@ -139,6 +145,25 @@ const Books: FC = () => {
     getBooks();
     getUsers();
   }, []);
+
+  const handleScroll = async (e): Promise<void> => {
+    // https://stackoverflow.com/a/34550171/7881576 - How to detect if the user has scrolled to the bottom
+    const element = e.target;
+    if (element?.scrollHeight - element?.scrollTop === element?.clientHeight) {
+      // console.log('scrolled');
+      setFetching(true);
+      const fetched = await fetch(
+        `http://localhost:3002/books?${new URLSearchParams({
+          page: `${page + 1}`,
+        })}`
+      );
+
+      const response = await fetched.json();
+      setData([...data, ...response]);
+      setPage(page + 1);
+      setFetching(false);
+    }
+  };
 
   const books = data.filter((q: any) => q.title.toLowerCase().includes(searchText.toLowerCase()));
 
@@ -311,7 +336,7 @@ const Books: FC = () => {
       {bookLoading ? (
         <Spinner size="lg" />
       ) : (
-        <>
+        <Box height="80vh" overflow="scroll" overflowX="hidden" onScroll={handleScroll}>
           {books.length ? (
             <TableContainer>
               <Table size="sm">
@@ -328,6 +353,7 @@ const Books: FC = () => {
                     <Th>Quantity</Th>
                   </Tr>
                 </Thead>
+                <Box h="24.5px" />
                 <Tbody>
                   {books.map((book: any) => {
                     if (book.title) {
@@ -387,7 +413,7 @@ const Books: FC = () => {
               <AlertTitle>No Books Found!</AlertTitle>
             </Alert>
           )}
-        </>
+        </Box>
       )}
 
       {/* Borrow BOOK MODAL */}
