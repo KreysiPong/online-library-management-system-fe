@@ -68,7 +68,7 @@ const Borrowers: FC = () => {
       ) : (
         <>
           {!data.length ? (
-            <Alert status="error">
+            <Alert status="error" colorScheme="red">
               <AlertIcon />
               <AlertTitle>No Borrowers Found!</AlertTitle>
             </Alert>

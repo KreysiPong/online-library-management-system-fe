@@ -43,6 +43,8 @@ import { FC, useEffect, useState } from 'react';
 import { GiNotebook } from 'react-icons/gi';
 import { HiTrash } from 'react-icons/hi';
 import { RiHandCoinFill, RiHealthBookLine } from 'react-icons/ri';
+import { SiMicrosoftexcel } from 'react-icons/si';
+import * as XLSX from 'xlsx';
 
 const Books: FC = () => {
   const [data, setData] = useState([]);
@@ -152,7 +154,83 @@ const Books: FC = () => {
             }}
           />
         </Box>
+        <input
+          style={{ visibility: 'hidden' }}
+          type="file"
+          id="upload"
+          onChange={(e) => {
+            e.preventDefault();
+
+            console.log('hehe');
+            var files = e.target.files,
+              f = files?.[0];
+
+            var reader = new FileReader();
+            reader.onload = function (e) {
+              console.log('umabot ba dito?');
+              var data = (e.target as any).result;
+              let readedData = XLSX.read(data, { type: 'binary' });
+              const wsname = readedData.SheetNames[0];
+              const ws = readedData.Sheets[wsname];
+
+              const dataParse = XLSX.utils.sheet_to_json(ws, { header: 1 });
+              dataParse.map(async (q: Array<any>, i) => {
+                if (i !== 0) {
+                  if (q.length > 13) {
+                    console.log({
+                      class: q[2],
+                      author: q[3],
+                      title: q[4],
+                      edition: q[5],
+                      volume: q[6],
+                      pages: q[7],
+                      source_of_fund: q[8],
+                      publisher: q[9],
+                      year: q[10],
+                      remarks: q[11],
+                      locator: q[12],
+                      isbn: q[13],
+                    });
+                    const data = await fetch('http://localhost:3002/books/create', {
+                      method: 'POST',
+                      headers: {
+                        'Content-type': 'application/json',
+                      },
+                      body: JSON.stringify({
+                        class: q[2],
+                        author: q[3],
+                        title: q[4],
+                        edition: q[5],
+                        volume: q[6],
+                        pages: q[7],
+                        source_of_fund: q[8],
+                        publisher: q[9],
+                        year: q[10],
+                        remarks: q[11],
+                        locator: q[12],
+                        isbn: q[13],
+                      }),
+                    });
+                    console.log(`${i}/${dataParse.length - 1}`);
+                  }
+                }
+              });
+            };
+            reader.readAsBinaryString(f as any);
+          }}
+        />
         <Box>
+          <Button
+            colorScheme="cyan"
+            color="white"
+            onClick={() => {
+              document.getElementById('upload')?.click();
+            }}
+            marginRight="8px"
+          >
+            <SiMicrosoftexcel />
+            &nbsp;
+          </Button>
           <Button
             colorScheme="cyan"
             color="white"
@@ -163,11 +241,11 @@ const Books: FC = () => {
             marginRight="8px"
           >
             <RiHandCoinFill />
-            &nbsp;Borrow book
+            &nbsp;
           </Button>
           <Button colorScheme="blue" onClick={onAddBookOpen}>
             <RiHealthBookLine />
-            &nbsp;Add book
+            &nbsp;
           </Button>
         </Box>
       </Box>
