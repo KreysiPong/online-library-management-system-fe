@@ -336,84 +336,94 @@ const Books: FC = () => {
       {bookLoading ? (
         <Spinner size="lg" />
       ) : (
-        <Box height="80vh" overflow="scroll" overflowX="hidden" onScroll={handleScroll}>
-          {books.length ? (
-            <TableContainer>
-              <Table size="sm">
-                <Thead>
-                  <Tr>
-                    <Th>Actions</Th>
-                    <Th>year</Th>
-                    <Th>Class</Th>
-                    <Th>Title</Th>
-                    <Th>Author</Th>
-                    <Th>Publisher</Th>
-                    <Th>Date Acquired</Th>
-                    <Th>ISBN</Th>
-                    <Th>Quantity</Th>
-                  </Tr>
-                </Thead>
-                <Box h="24.5px" />
-                <Tbody>
-                  {books.map((book: any) => {
-                    if (book.title) {
-                      return (
-                        <Tr key={book._id}>
-                          <Td>
-                            <Tooltip label="Delete book">
-                              <Popover placement="left">
-                                <PopoverTrigger>
-                                  <Button ml="2" colorScheme="red">
-                                    <HiTrash />
-                                  </Button>
-                                </PopoverTrigger>
-                                <Portal>
-                                  <PopoverContent>
-                                    <PopoverArrow />
-                                    <PopoverHeader>Are you sure you want to delete this book?</PopoverHeader>
-                                    <PopoverCloseButton />
-                                    <PopoverBody>
-                                      <Button colorScheme="red" onClick={() => onDelete(book._id)}>
-                                        Confirm
-                                      </Button>
-                                    </PopoverBody>
-                                  </PopoverContent>
-                                </Portal>
-                              </Popover>
-                            </Tooltip>
+        <>
+          <Box height="70vh" overflow="scroll" overflowX="hidden" onScroll={handleScroll}>
+            {books.length ? (
+              <TableContainer>
+                <Table size="sm">
+                  <Thead>
+                    <Tr>
+                      <Th>Actions</Th>
+                      <Th>year</Th>
+                      <Th>Class</Th>
+                      <Th>Title</Th>
+                      <Th>Author</Th>
+                      <Th>Publisher</Th>
+                      <Th>Date Acquired</Th>
+                      <Th>ISBN</Th>
+                      <Th>Quantity</Th>
+                    </Tr>
+                  </Thead>
+                  <Box h="24.5px" />
+                  <Tbody>
+                    {books.map((book: any) => {
+                      if (book.title) {
+                        return (
+                          <Tr key={book._id}>
+                            <Td>
+                              <Tooltip label="Delete book">
+                                <Popover placement="left">
+                                  <PopoverTrigger>
+                                    <Button ml="2" colorScheme="red">
+                                      <HiTrash />
+                                    </Button>
+                                  </PopoverTrigger>
+                                  <Portal>
+                                    <PopoverContent>
+                                      <PopoverArrow />
+                                      <PopoverHeader>Are you sure you want to delete this book?</PopoverHeader>
+                                      <PopoverCloseButton />
+                                      <PopoverBody>
+                                        <Button colorScheme="red" onClick={() => onDelete(book._id)}>
+                                          Confirm
+                                        </Button>
+                                      </PopoverBody>
+                                    </PopoverContent>
+                                  </Portal>
+                                </Popover>
+                              </Tooltip>
 
-                            <Tooltip label="Update book">
-                              <Button ml="2" colorScheme="orange">
-                                <GiNotebook />
-                              </Button>
-                            </Tooltip>
-                          </Td>
-                          <Td>{book.year}</Td>
-                          <Td>{book.class}</Td>
-                          <Td>{book.title.length > 50 ? `${book.title.substr(0, 26)}...` : book.title}</Td>
-                          <Td>{book.author}</Td>
-                          <Td>{book.publisher}</Td>
-                          <Td>{dayjs(book.createdAt).format('MMM DD,YYYY HH:mm')}</Td>
-                          <Td>{book.isbn}</Td>
-                          <Td>
-                            {book.quantity < 5 && <Tag colorScheme="red">{book.quantity}</Tag>}
-                            {book.quantity > 5 && book.quantity < 20 && <Tag colorScheme="orange">{book.quantity}</Tag>}
-                            {book.quantity > 20 && <Tag colorScheme="green">{book.quantity}</Tag>}
-                          </Td>
-                        </Tr>
-                      );
-                    }
-                  })}
-                </Tbody>
-              </Table>
-            </TableContainer>
-          ) : (
-            <Alert status="error">
-              <AlertIcon />
-              <AlertTitle>No Books Found!</AlertTitle>
-            </Alert>
+                              <Tooltip label="Update book">
+                                <Button ml="2" colorScheme="orange">
+                                  <GiNotebook />
+                                </Button>
+                              </Tooltip>
+                            </Td>
+                            <Td>{book.year}</Td>
+                            <Td>{book.class}</Td>
+                            <Td>{book.title.length > 50 ? `${book.title.substr(0, 26)}...` : book.title}</Td>
+                            <Td>{book.author}</Td>
+                            <Td>{book.publisher}</Td>
+                            <Td>{dayjs(book.createdAt).format('MMM DD,YYYY HH:mm')}</Td>
+                            <Td>{book.isbn}</Td>
+                            <Td>
+                              {book.quantity < 5 && <Tag colorScheme="red">{book.quantity}</Tag>}
+                              {book.quantity > 5 && book.quantity < 20 && (
+                                <Tag colorScheme="orange">{book.quantity}</Tag>
+                              )}
+                              {book.quantity > 20 && <Tag colorScheme="green">{book.quantity}</Tag>}
+                            </Td>
+                          </Tr>
+                        );
+                      }
+                    })}
+                  </Tbody>
+                </Table>
+              </TableContainer>
+            ) : (
+              <Alert status="error">
+                <AlertIcon />
+                <AlertTitle>No Books Found!</AlertTitle>
+              </Alert>
+            )}
+          </Box>
+          {fetching && (
+            <Box display="flex" justifyContent="center" mt="10" fontSize="14px" color="gray">
+              Loading more books...&nbsp;
+              <Spinner size="sm" />
+            </Box>
           )}
-        </Box>
+        </>
       )}
 
       {/* Borrow BOOK MODAL */}
