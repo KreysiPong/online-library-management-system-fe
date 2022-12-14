@@ -4,6 +4,7 @@ import {
   AlertTitle,
   Box,
   Button,
+  Center,
   FormControl,
   FormLabel,
   Input,
@@ -58,6 +59,7 @@ const Books: FC = () => {
   const { isOpen: isAddBookOpen, onOpen: onAddBookOpen, onClose: onAddBookClose } = useDisclosure();
   const toast = useToast();
   const [bookLoading, setBookLoading] = useState(false);
+  const [importing, setImporting] = useState(false);
 
   const getBooks = async () => {
     setBookLoading(true);
@@ -160,39 +162,57 @@ const Books: FC = () => {
           id="upload"
           onChange={(e) => {
             e.preventDefault();
+            setImporting(true);
 
-            const files = e.target.files,
-              f = files?.[0];
+            try {
+              const files = e.target.files,
+                f = files?.[0];
 
-            const reader = new FileReader();
-            reader.onload = function (e) {
-              console.log('umabot ba dito?');
-              const data = (e.target as any).result;
-              let readedData = XLSX.read(data, { type: 'binary' });
-              const wsname = readedData.SheetNames[0];
-              const ws = readedData.Sheets[wsname];
+              const reader = new FileReader();
+              reader.onload = function (e) {
+                const data = (e.target as any).result;
+                const readedData = XLSX.read(data, { type: 'binary' });
+                const wsname = readedData.SheetNames[0];
+                const ws = readedData.Sheets[wsname];
 
-              const dataParse = XLSX.utils.sheet_to_json(ws, { header: 1 });
-              const book = {};
-              dataParse.map(async (q: Array<any>, i) => {
-                if (i !== 0) {
-                  if (q.length > 13) {
-                    if (book[q[4]]) {
-                      const temp = book[q[4]];
+                const dataParse = XLSX.utils.sheet_to_json(ws, { header: 1 });
+                const book = {};
+                dataParse.map(async (q: Array<any>, i) => {
+                  if (i !== 0) {
+                    if (q.length > 10) {
+                      if (book[q[4]]) {
+                        const temp = book[q[4]];
 
-                      if (
-                        temp.title === q[4] &&
-                        temp.isbn === q[13] &&
-                        temp.year === q[10] &&
-                        temp.publisher === q[9] &&
-                        temp.pages === q[7] &&
-                        temp.edition === q[5] &&
-                        temp.author === q[3] &&
-                        temp.class === q[2]
-                      ) {
-                        temp.quantity = temp.quantity + 1;
+                        if (
+                          temp.title === q[4] &&
+                          temp.isbn === q[13] &&
+                          temp.year === q[10] &&
+                          temp.publisher === q[9] &&
+                          temp.pages === q[7] &&
+                          temp.edition === q[5] &&
+                          temp.author === q[3] &&
+                          temp.class === q[2]
+                        ) {
+                          temp.quantity = temp.quantity + 1;
+                        } else {
+                          book[`${q[4]} v2`] = {
+                            class: q[2],
+                            author: q[3],
+                            title: q[4],
+                            edition: q[5],
+                            volume: q[6],
+                            pages: q[7],
+                            source_of_fund: q[8],
+                            publisher: q[9],
+                            year: q[10],
+                            remarks: q[11],
+                            locator: q[12],
+                            isbn: q[13],
+                            quantity: 1,
+                          };
+                        }
                       } else {
-                        book[`${q[4]} v2`] = {
+                        book[q[4]] = {
                           class: q[2],
                           author: q[3],
                           title: q[4],
@@ -208,67 +228,53 @@ const Books: FC = () => {
                           quantity: 1,
                         };
                       }
-                    } else {
-                      book[q[4]] = {
-                        class: q[2],
-                        author: q[3],
-                        title: q[4],
-                        edition: q[5],
-                        volume: q[6],
-                        pages: q[7],
-                        source_of_fund: q[8],
-                        publisher: q[9],
-                        year: q[10],
-                        remarks: q[11],
-                        locator: q[12],
-                        isbn: q[13],
-                        quantity: 1,
-                      };
                     }
-
-                    // console.log({
-                    //   class: q[2],
-                    //   author: q[3],
-                    //   title: q[4],
-                    //   edition: q[5],
-                    //   volume: q[6],
-                    //   pages: q[7],
-                    //   source_of_fund: q[8],
-                    //   publisher: q[9],
-                    //   year: q[10],
-                    //   remarks: q[11],
-                    //   locator: q[12],
-                    //   isbn: q[13],
-                    //   quantity: 1,
-                    // });
-                    // const data = await fetch('http://localhost:3002/books/create', {
-                    //   method: 'POST',
-                    //   headers: {
-                    //     'Content-type': 'application/json',
-                    //   },
-                    //   body: JSON.stringify({
-                    //     class: q[2],
-                    //     author: q[3],
-                    //     title: q[4],
-                    //     edition: q[5],
-                    //     volume: q[6],
-                    //     pages: q[7],
-                    //     source_of_fund: q[8],
-                    //     publisher: q[9],
-                    //     year: q[10],
-                    //     remarks: q[11],
-                    //     locator: q[12],
-                    //     isbn: q[13],
-                    //   }),
-                    // });
-                    // console.log(`${i}/${dataParse.length - 1}`);
                   }
-                }
-              });
+                });
 
-              console.log(book);
-            };
-            reader.readAsBinaryString(f as any);
+                const importableBooks = Object.values(book);
+                void Promise.all(
+                  importableBooks.map(async (q: any) => {
+                    try {
+                      await fetch('http://localhost:3002/books/create', {
+                        method: 'POST',
+                        headers: {
+                          'Content-type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                          class: q.class,
+                          author: q.author,
+                          title: q.title,
+                          edition: q.edition,
+                          volume: q.volume,
+                          pages: q.pages,
+                          source_of_fund: q.source_of_fund,
+                          publisher: q.publisher,
+                          year: q.year,
+                          remarks: q.remarks,
+                          locator: q.locator,
+                          isbn: q.isbn,
+                          quantity: q.quantity,
+                        }),
+                      });
+                    } catch (ex) {}
+                  })
+                ).then(() => {
+                  toast({
+                    title: 'Books imported successfully. Reloading page...',
+                    status: 'success',
+                    duration: 10000,
+                  });
+                  const timeout = setTimeout(() => {
+                    location.reload();
+                    clearTimeout(timeout);
+                  }, 5000);
+                });
+              };
+              reader.readAsBinaryString(f as any);
+            } catch (ex) {
+              setImporting(false);
+            }
           }}
         />
         <Box>
@@ -311,6 +317,7 @@ const Books: FC = () => {
               <Table size="sm">
                 <Thead>
                   <Tr>
+                    <Th>Actions</Th>
                     <Th>year</Th>
                     <Th>Class</Th>
                     <Th>Title</Th>
@@ -319,56 +326,57 @@ const Books: FC = () => {
                     <Th>Date Acquired</Th>
                     <Th>ISBN</Th>
                     <Th>Quantity</Th>
-                    <Th>Actions</Th>
                   </Tr>
                 </Thead>
                 <Tbody>
                   {books.map((book: any) => {
-                    return (
-                      <Tr key={book._id}>
-                        <Td>{book.year}</Td>
-                        <Td>{book.class}</Td>
-                        <Td>{book.title}</Td>
-                        <Td>{book.author}</Td>
-                        <Td>{book.publisher}</Td>
-                        <Td>{dayjs(book.createdAt).format('MMM DD,YYYY HH:mm')}</Td>
-                        <Td>{book.isbn}</Td>
-                        <Td>
-                          {book.quantity < 5 && <Tag colorScheme="red">{book.quantity}</Tag>}
-                          {book.quantity > 5 && book.quantity < 20 && <Tag colorScheme="orange">{book.quantity}</Tag>}
-                          {book.quantity > 20 && <Tag colorScheme="green">{book.quantity}</Tag>}
-                        </Td>
-                        <Td>
-                          <Tooltip label="Delete book">
-                            <Popover placement="left">
-                              <PopoverTrigger>
-                                <Button ml="2" colorScheme="red">
-                                  <HiTrash />
-                                </Button>
-                              </PopoverTrigger>
-                              <Portal>
-                                <PopoverContent>
-                                  <PopoverArrow />
-                                  <PopoverHeader>Are you sure you want to delete this book?</PopoverHeader>
-                                  <PopoverCloseButton />
-                                  <PopoverBody>
-                                    <Button colorScheme="red" onClick={() => onDelete(book._id)}>
-                                      Confirm
-                                    </Button>
-                                  </PopoverBody>
-                                </PopoverContent>
-                              </Portal>
-                            </Popover>
-                          </Tooltip>
+                    if (book.title) {
+                      return (
+                        <Tr key={book._id}>
+                          <Td>
+                            <Tooltip label="Delete book">
+                              <Popover placement="left">
+                                <PopoverTrigger>
+                                  <Button ml="2" colorScheme="red">
+                                    <HiTrash />
+                                  </Button>
+                                </PopoverTrigger>
+                                <Portal>
+                                  <PopoverContent>
+                                    <PopoverArrow />
+                                    <PopoverHeader>Are you sure you want to delete this book?</PopoverHeader>
+                                    <PopoverCloseButton />
+                                    <PopoverBody>
+                                      <Button colorScheme="red" onClick={() => onDelete(book._id)}>
+                                        Confirm
+                                      </Button>
+                                    </PopoverBody>
+                                  </PopoverContent>
+                                </Portal>
+                              </Popover>
+                            </Tooltip>
 
-                          <Tooltip label="Update book">
-                            <Button ml="2" colorScheme="orange">
-                              <GiNotebook />
-                            </Button>
-                          </Tooltip>
-                        </Td>
-                      </Tr>
-                    );
+                            <Tooltip label="Update book">
+                              <Button ml="2" colorScheme="orange">
+                                <GiNotebook />
+                              </Button>
+                            </Tooltip>
+                          </Td>
+                          <Td>{book.year}</Td>
+                          <Td>{book.class}</Td>
+                          <Td>{book.title.length > 50 ? `${book.title.substr(0, 26)}...` : book.title}</Td>
+                          <Td>{book.author}</Td>
+                          <Td>{book.publisher}</Td>
+                          <Td>{dayjs(book.createdAt).format('MMM DD,YYYY HH:mm')}</Td>
+                          <Td>{book.isbn}</Td>
+                          <Td>
+                            {book.quantity < 5 && <Tag colorScheme="red">{book.quantity}</Tag>}
+                            {book.quantity > 5 && book.quantity < 20 && <Tag colorScheme="orange">{book.quantity}</Tag>}
+                            {book.quantity > 20 && <Tag colorScheme="green">{book.quantity}</Tag>}
+                          </Td>
+                        </Tr>
+                      );
+                    }
                   })}
                 </Tbody>
               </Table>
@@ -432,6 +440,30 @@ const Books: FC = () => {
 
       {/* ADD BOOK MODAL */}
       <AddBookModal prevData={data} isOpen={isAddBookOpen} onClose={onAddBookClose} setData={setData} />
+
+      {/* IMPORTING MODAL */}
+      <Modal
+        closeOnOverlayClick={false}
+        isOpen={importing}
+        onClose={() => {
+          setImporting(false);
+        }}
+        isCentered
+      >
+        <ModalOverlay />
+        <ModalContent>
+          <ModalBody pb={6} d="grid" placeContent="center" m="auto" p="10">
+            <>
+              <Text fontSize="20px" textAlign="center">
+                Importing Books. Please wait.
+              </Text>
+              <Center mt="16px">
+                <Spinner textAlign="center" size="lg" />
+              </Center>
+            </>
+          </ModalBody>
+        </ModalContent>
+      </Modal>
     </Box>
   );
 };
