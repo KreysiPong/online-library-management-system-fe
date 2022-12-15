@@ -131,7 +131,7 @@ const SignupModal: FC<any> = ({ isOpen, onClose }) => {
                 <FormLabel>
                   Student Id <RequiredFields />
                 </FormLabel>
-                <Input type="text" value={studentId} onChange={(e) => setStudentId(+e.target.value)} />
+                <Input type="text" value={studentId} onChange={(e) => setStudentId(e.target.value)} />
               </FormControl>
             </Flex>
             <Flex mb="16px">
