@@ -1,20 +1,33 @@
 import {
   Box,
   Button,
-  Checkbox,
   Flex,
   FormControl,
   FormLabel,
   Heading,
   Input,
-  Link,
   Stack,
-  Text,
   useColorModeValue,
   useToast,
 } from '@chakra-ui/react';
 import { useRouter } from 'next/router';
 import { FC, useState } from 'react';
+
+const parseJWT = (token) => {
+  const base64Url = token.split('.')[1];
+  const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+  const jsonPayload = decodeURIComponent(
+    window
+      .atob(base64)
+      .split('')
+      .map(function (c) {
+        return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+      })
+      .join('')
+  );
+
+  return JSON.parse(jsonPayload);
+};
 
 const Home: FC = () => {
   const router = useRouter();
@@ -38,8 +51,9 @@ const Home: FC = () => {
     });
     const response = await data.json();
     setLoading(true);
-    if (response) {
-      router.push('/admin/books');
+    if (response.accessToken) {
+      const userType = parseJWT(response.accessToken).type;
+
       toast({
         title: 'Successfully Logged in',
         status: 'success',
@@ -47,27 +61,30 @@ const Home: FC = () => {
         duration: 1500,
       });
       localStorage.setItem('accessToken', response.accessToken);
-    } else {
+      localStorage.setItem('userType', userType);
+
+      if (userType === 'ADMIN') {
+        router.push('/admin/books');
+      } else {
+        router.push('/students/reservation');
+      }
+    }
+
+    if (response.error) {
       toast({
-        title: 'Failed to logged in',
+        title: 'Incorrect Username or Password',
         status: 'error',
         isClosable: true,
       });
+      setLoading(false);
     }
   };
-
-  // useEffect(() => {
-  //   void router.push('/admin/books');
-  // }, []);
 
   return (
     <Flex minH={'100vh'} align={'center'} justify={'center'} bg={useColorModeValue('gray.50', 'gray.800')}>
       <Stack spacing={8} mx={'auto'} maxW={'lg'} py={12} px={6}>
         <Stack align={'center'}>
           <Heading fontSize={'4xl'}>Sign in to your account</Heading>
-          <Text fontSize={'lg'} color={'gray.600'}>
-            to enjoy all of our cool <Link color={'blue.400'}>features</Link> ✌️
-          </Text>
         </Stack>
         <Box rounded={'lg'} bg={useColorModeValue('white', 'gray.700')} boxShadow={'lg'} p={8}>
           <form>
@@ -81,12 +98,7 @@ const Home: FC = () => {
                 <Input type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
               </FormControl>
               <Stack spacing={10}>
-                <Stack direction={{ base: 'column', sm: 'row' }} align={'start'} justify={'space-between'}>
-                  <Checkbox>Remember me</Checkbox>
-                  <Link color={'blue.400'} onClick={() => router.push('/signup')}>
-                    Sign Up
-                  </Link>
-                </Stack>
+                <Stack direction={{ base: 'column', sm: 'row' }} align={'start'} justify={'space-between'}></Stack>
                 <Button
                   bg={'blue.400'}
                   color={'white'}

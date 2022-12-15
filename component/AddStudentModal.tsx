@@ -1,5 +1,4 @@
 import {
-  Box,
   Button,
   Flex,
   FormControl,
@@ -82,6 +81,7 @@ const AddStudentModal: FC = ({ isOpen, onClose, setData, prevData }) => {
       const temp = [...prevData];
       temp.push(response.data);
       setData(temp);
+      onModalClose();
     } else {
       toast({
         title: response.message,
@@ -89,110 +89,78 @@ const AddStudentModal: FC = ({ isOpen, onClose, setData, prevData }) => {
         isClosable: true,
       });
     }
-
-    onModalClose();
   };
 
   return (
     <form>
-      <Modal isOpen={isOpen} onClose={onModalClose} size="xl">
+      <Modal isOpen={isOpen} onClose={onModalClose} size="xl" closeOnOverlayClick={false}>
         <ModalOverlay />
         <ModalContent>
           <ModalHeader>Add Student</ModalHeader>
           <ModalCloseButton />
           <ModalBody>
-            <Flex justifyContent="space-evenly">
-              <Box>
-                <FormControl>
-                  <FormLabel>
-                    First Name <RequiredFields />
-                  </FormLabel>
-                  <Input type="text" value={firstName} onChange={(e) => setFirstName(e.target.value)} />
-                </FormControl>
-                <FormControl>
-                  <FormLabel>
-                    Last Name <RequiredFields />
-                  </FormLabel>
-                  <Input type="text" value={lastName} onChange={(e) => setLastName(e.target.value)} />
-                </FormControl>
-                <FormControl>
-                  <FormLabel>
-                    Course <RequiredFields />
-                  </FormLabel>
-                  <Input type="text" value={course} onChange={(e) => setCourse(e.target.value)} />
-                </FormControl>
-                <FormControl>
-                  <FormLabel>
-                    Student Id <RequiredFields />
-                  </FormLabel>
-                  <Input type="text" value={studentId} onChange={(e) => setStudentId(+e.target.value)} />
-                </FormControl>
-                <FormControl>
-                  <FormLabel>
-                    Year <RequiredFields />
-                  </FormLabel>
-                  <Input type="number" value={year} onChange={(e) => setYear(parseInt(e.target.value))} />
-                </FormControl>
-                <FormControl>
-                  <FormLabel>
-                    Username <RequiredFields />
-                  </FormLabel>
-                  <Input type="text" value={username} onChange={(e) => setUsername(e.target.value)} />
-                </FormControl>
-                <FormControl>
-                  <FormLabel>
-                    Password <RequiredFields />
-                  </FormLabel>
-                  <Input type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
-                </FormControl>
-                <FormControl>
-                  <FormLabel>
-                    Confirm Password <RequiredFields />
-                  </FormLabel>
-                  <Input type="password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} />
-                </FormControl>
-                <FormControl>
-                  <FormLabel>
-                    Email <RequiredFields />
-                  </FormLabel>
-                  <Input type="email" value={email} onChange={(e) => setEmail(e.target.value)} />
-                </FormControl>
-              </Box>
-              {/* <Box>
-                <FormControl>
-                  <FormLabel>
-                    Year <RequiredFields />
-                  </FormLabel>
-                  <Input type="number" value={year} onChange={(e) => setYear(e.target.value)} />
-                </FormControl>
-                <FormControl>
-                  <FormLabel>Remarks</FormLabel>
-                  <Input type="text" value={remarks} onChange={(e) => setRemarks(e.target.value)} />
-                </FormControl>
-                <FormControl>
-                  <FormLabel>
-                    Locator <RequiredFields />
-                  </FormLabel>
-                  <Input type="text" value={locator} onChange={(e) => setLocator(e.target.value)} />
-                </FormControl>
-                <FormControl>
-                  <FormLabel>
-                    ISBN <RequiredFields />
-                  </FormLabel>
-                  <Input type="text" value={isbn} onChange={(e) => setIsbn(e.target.value)} />
-                </FormControl>
-                <FormControl>
-                  <FormLabel>Source of Fund</FormLabel>
-                  <Input type="text" value={sourceOfFund} onChange={(e) => setSourceOfFund(e.target.value)} />
-                </FormControl>
-                <FormControl>
-                  <FormLabel>
-                    Quantity <RequiredFields />
-                  </FormLabel>
-                  <Input type="number" value={quantity} onChange={(e) => setQuantity(parseInt(e.target.value))} />
-                </FormControl>
-              </Box> */}
+            <Flex mb="16px">
+              <FormControl mr="8px">
+                <FormLabel>
+                  First Name <RequiredFields />
+                </FormLabel>
+                <Input type="text" value={firstName} onChange={(e) => setFirstName(e.target.value)} />
+              </FormControl>
+              <FormControl>
+                <FormLabel>
+                  Last Name <RequiredFields />
+                </FormLabel>
+                <Input type="text" value={lastName} onChange={(e) => setLastName(e.target.value)} />
+              </FormControl>
             </Flex>
+            <Flex mb="16px">
+              <FormControl mr="8px">
+                <FormLabel>
+                  Course <RequiredFields />
+                </FormLabel>
+                <Input type="text" value={course} onChange={(e) => setCourse(e.target.value)} />
+              </FormControl>
+              <FormControl>
+                <FormLabel>
+                  Student Id <RequiredFields />
+                </FormLabel>
+                <Input type="text" value={studentId} onChange={(e) => setStudentId(+e.target.value)} />
+              </FormControl>
+            </Flex>
+            <Flex mb="16px">
+              <FormControl mr="8px">
+                <FormLabel>
+                  Year <RequiredFields />
+                </FormLabel>
+                <Input type="number" value={year} onChange={(e) => setYear(parseInt(e.target.value))} />
+              </FormControl>
+              <FormControl>
+                <FormLabel>
+                  Username <RequiredFields />
+                </FormLabel>
+                <Input type="text" value={username} onChange={(e) => setUsername(e.target.value)} />
+              </FormControl>
+            </Flex>
+            <Flex mb="16px">
+              <FormControl mr="8px">
+                <FormLabel>
+                  Password <RequiredFields />
+                </FormLabel>
+                <Input type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
+              </FormControl>
+              <FormControl>
+                <FormLabel>
+                  Confirm Password <RequiredFields />
+                </FormLabel>
+                <Input type="password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} />
+              </FormControl>
+            </Flex>
+            <FormControl mr="8px">
+              <FormLabel>
+                Email <RequiredFields />
+              </FormLabel>
+              <Input type="email" value={email} onChange={(e) => setEmail(e.target.value)} />
+            </FormControl>
           </ModalBody>
 
           <ModalFooter>

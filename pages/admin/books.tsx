@@ -62,6 +62,7 @@ const Books: FC = () => {
   const [importing, setImporting] = useState(false);
   const [page, setPage] = useState(1);
   const [fetching, setFetching] = useState(false);
+  const [key, setKey] = useState(`${+new Date()}`);
 
   const getBooks = async () => {
     setBookLoading(true);
@@ -185,6 +186,7 @@ const Books: FC = () => {
           style={{ visibility: 'hidden' }}
           type="file"
           id="upload"
+          key={key}
           onChange={(e) => {
             e.preventDefault();
             setImporting(true);
@@ -258,6 +260,7 @@ const Books: FC = () => {
                 });
 
                 const importableBooks = Object.values(book);
+
                 void Promise.all(
                   importableBooks.map(async (q: any) => {
                     try {
@@ -288,12 +291,12 @@ const Books: FC = () => {
                   toast({
                     title: 'Books imported successfully. Reloading page...',
                     status: 'success',
-                    duration: 10000,
+                    duration: 3000,
                   });
-                  const timeout = setTimeout(() => {
-                    location.reload();
-                    clearTimeout(timeout);
-                  }, 5000);
+                  setPage(1);
+                  void getBooks();
+                  setImporting(false);
+                  setKey(`${+new Date()}`);
                 });
               };
               reader.readAsBinaryString(f as any);
@@ -344,6 +347,7 @@ const Books: FC = () => {
                   <Thead>
                     <Tr>
                       <Th>Actions</Th>
+                      <Th>Quantity</Th>
                       <Th>year</Th>
                       <Th>Class</Th>
                       <Th>Title</Th>
@@ -351,7 +355,6 @@ const Books: FC = () => {
                       <Th>Publisher</Th>
                       <Th>Date Acquired</Th>
                       <Th>ISBN</Th>
-                      <Th>Quantity</Th>
                     </Tr>
                   </Thead>
                   <Box h="24.5px" />
@@ -389,20 +392,20 @@ const Books: FC = () => {
                                 </Button>
                               </Tooltip>
                             </Td>
-                            <Td>{book.year}</Td>
-                            <Td>{book.class}</Td>
-                            <Td>{book.title.length > 50 ? `${book.title.substr(0, 26)}...` : book.title}</Td>
-                            <Td>{book.author}</Td>
-                            <Td>{book.publisher}</Td>
-                            <Td>{dayjs(book.createdAt).format('MMM DD,YYYY HH:mm')}</Td>
-                            <Td>{book.isbn}</Td>
                             <Td>
-                              {book.quantity < 5 && <Tag colorScheme="red">{book.quantity}</Tag>}
+                              {book.quantity <= 5 && <Tag colorScheme="red">{book.quantity}</Tag>}
                               {book.quantity > 5 && book.quantity < 20 && (
                                 <Tag colorScheme="orange">{book.quantity}</Tag>
                               )}
                               {book.quantity > 20 && <Tag colorScheme="green">{book.quantity}</Tag>}
                             </Td>
+                            <Td>{book.year}</Td>
+                            <Td>{book.class}</Td>
+                            <Td>{book.title.length > 50 ? `${book.title.substr(0, 26)}...` : book.title}</Td>
+                            <Td>{book.author?.length > 50 ? `${book.author.substr(0, 26)}...` : book.author}</Td>
+                            <Td>{book.publisher}</Td>
+                            <Td>{dayjs(book.createdAt).format('MMM DD,YYYY HH:mm')}</Td>
+                            <Td>{book.isbn}</Td>
                           </Tr>
                         );
                       }
