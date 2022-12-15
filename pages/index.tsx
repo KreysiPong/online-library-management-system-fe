@@ -14,7 +14,7 @@ import {
   useToast,
 } from '@chakra-ui/react';
 import { useRouter } from 'next/router';
-import { FC, useEffect, useState } from 'react';
+import { FC, useState } from 'react';
 
 const Home: FC = () => {
   const router = useRouter();
@@ -56,9 +56,9 @@ const Home: FC = () => {
     }
   };
 
-  useEffect(() => {
-    void router.push('/admin/books');
-  }, []);
+  // useEffect(() => {
+  //   void router.push('/admin/books');
+  // }, []);
 
   return (
     <Flex minH={'100vh'} align={'center'} justify={'center'} bg={useColorModeValue('gray.50', 'gray.800')}>
