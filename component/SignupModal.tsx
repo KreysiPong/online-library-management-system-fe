@@ -18,7 +18,7 @@ import { COURSES } from 'constants/courses';
 import { FC, useState } from 'react';
 import RequiredFields from './RequiredFields';
 
-const AddStudentModal: FC<any> = ({ isOpen, onClose, setData, prevData }) => {
+const SignupModal: FC<any> = ({ isOpen, onClose }) => {
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [course, setCourse] = useState('');
@@ -27,10 +27,12 @@ const AddStudentModal: FC<any> = ({ isOpen, onClose, setData, prevData }) => {
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const toast = useToast();
 
-  const isDisabled = !firstName || loading || !lastName || !course || !studentId || !year;
+  const isDisabled =
+    !firstName || loading || !lastName || !course || !studentId || !year || !year || !username || !email;
 
   const resetForm = () => {
     setFirstName('');
@@ -41,6 +43,7 @@ const AddStudentModal: FC<any> = ({ isOpen, onClose, setData, prevData }) => {
     setUsername('');
     setEmail('');
     setPassword('');
+    setConfirmPassword('');
   };
 
   const onModalClose = () => {
@@ -61,7 +64,7 @@ const AddStudentModal: FC<any> = ({ isOpen, onClose, setData, prevData }) => {
       password,
     };
 
-    const data = await fetch('http://localhost:3002/users/signup', {
+    const data = await fetch('http://localhost:3002/users/register', {
       method: 'POST',
       headers: {
         'Content-type': 'application/json',
@@ -77,9 +80,6 @@ const AddStudentModal: FC<any> = ({ isOpen, onClose, setData, prevData }) => {
         isClosable: true,
       });
       onClose();
-      const temp = [...prevData];
-      temp.push(response.data);
-      setData(temp);
       onModalClose();
     } else {
       toast({
@@ -95,7 +95,7 @@ const AddStudentModal: FC<any> = ({ isOpen, onClose, setData, prevData }) => {
       <Modal isOpen={isOpen} onClose={onModalClose} size="xl" closeOnOverlayClick={false}>
         <ModalOverlay />
         <ModalContent>
-          <ModalHeader>Add Student</ModalHeader>
+          <ModalHeader>Register</ModalHeader>
           <ModalCloseButton />
           <ModalBody>
             <Flex mb="16px">
@@ -146,7 +146,33 @@ const AddStudentModal: FC<any> = ({ isOpen, onClose, setData, prevData }) => {
                   <option value={4}>4th</option>
                 </Select>
               </FormControl>
+              <FormControl>
+                <FormLabel>
+                  Username <RequiredFields />
+                </FormLabel>
+                <Input type="text" value={username} onChange={(e) => setUsername(e.target.value)} />
+              </FormControl>
             </Flex>
+            <Flex mb="16px">
+              <FormControl mr="8px">
+                <FormLabel>
+                  Password <RequiredFields />
+                </FormLabel>
+                <Input type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
+              </FormControl>
+              <FormControl>
+                <FormLabel>
+                  Confirm Password <RequiredFields />
+                </FormLabel>
+                <Input type="password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} />
+              </FormControl>
+            </Flex>
+            <FormControl mr="8px">
+              <FormLabel>
+                Email <RequiredFields />
+              </FormLabel>
+              <Input type="email" value={email} onChange={(e) => setEmail(e.target.value)} />
+            </FormControl>
           </ModalBody>
 
           <ModalFooter>
@@ -163,4 +189,4 @@ const AddStudentModal: FC<any> = ({ isOpen, onClose, setData, prevData }) => {
   );
 };
 
-export default AddStudentModal;
+export default SignupModal;

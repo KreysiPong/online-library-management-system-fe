@@ -1,3 +1,4 @@
+import { CheckIcon, CloseIcon } from '@chakra-ui/icons';
 import {
   Alert,
   AlertIcon,
@@ -80,12 +81,14 @@ const Users: FC = () => {
               <Table variant="striped" colorScheme="teal" size="sm">
                 <Thead>
                   <Tr>
-                    <Th>Full Name</Th>
+                    <Th>First Name</Th>
+                    <Th>Last Name</Th>
                     <Th>Course</Th>
                     <Th>Student ID</Th>
                     <Th>Year</Th>
                     <Th>Username</Th>
                     <Th>Email</Th>
+                    <Th>Registered</Th>
                     <Th>Actions</Th>
                   </Tr>
                 </Thead>
@@ -93,14 +96,35 @@ const Users: FC = () => {
                   {data.map((user: any) => {
                     return (
                       <Tr key={user?._id}>
-                        <Td>
-                          {user?.first_name} {user?.last_name}
-                        </Td>
+                        <Td>{user?.first_name}</Td>
+                        <Td>{user?.last_name}</Td>
                         <Td>{user?.course}</Td>
                         <Td>{user?.student_id}</Td>
-                        <Td>{user?.year}</Td>
+                        <Td>
+                          {user?.year === 1 && (
+                            <>
+                              1<sup>st</sup>
+                            </>
+                          )}
+                          {user?.year === 2 && (
+                            <>
+                              2<sup>nd</sup>
+                            </>
+                          )}
+                          {user?.year === 3 && (
+                            <>
+                              3<sup>rd</sup>
+                            </>
+                          )}
+                          {user?.year === 4 && (
+                            <>
+                              4<sup>th</sup>
+                            </>
+                          )}
+                        </Td>
                         <Td>{user?.username}</Td>
                         <Td>{user?.email}</Td>
+                        <Td>{user.email ? <CheckIcon color="green" /> : <CloseIcon color="red" />}</Td>
                         <Td>
                           <Tooltip label="Delete Student">
                             <Button colorScheme="red" onClick={() => onDelete(user?._id)}>
